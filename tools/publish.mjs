@@ -70,7 +70,7 @@ execFileSync('node', [join(REPO, 'tools/build_index.mjs')], { stdio: 'inherit' }
 
 if (flags.includes('--push')) {
   const git = (...a) => execFileSync('git', a, { cwd: REPO, stdio: 'inherit' });
-  git('add', '-A', m.slug, 'index.html', 'README.md', 'assets');
-  git('commit', '-m', `发布：${m.meta?.title ?? m.slug}`);
+  git('add', '-A', m.slug, 'index.html', 'README.md', 'README.zh-CN.md', 'assets');
+  git('commit', '-m', `Publish: ${m.meta?.titleEn || m.slug}`);   // 提交信息统一用英文
   git('push');
 }

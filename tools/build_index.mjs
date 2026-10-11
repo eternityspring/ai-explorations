@@ -145,12 +145,16 @@ if (matchMedia('(hover: hover)').matches && !matchMedia('(prefers-reduced-motion
 `;
 writeFileSync(join(REPO, 'index.html'), html);
 
-// README 里的列表
-const readme = join(REPO, 'README.md');
-if (existsSync(readme)) {
-  const list = evals.map((e) => `| ${e.date} | [${e.title}](${SITE}${e.slug}/)<br>${e.titleEn} | ${(e.models ?? []).join(', ')} |`).join('\n');
-  const body = readFileSync(readme, 'utf8').replace(/<!-- evals:start -->[\s\S]*<!-- evals:end -->/,
-    `<!-- evals:start -->\n| 日期 Date | Demo | 模型 Models |\n|---|---|---|\n${list}\n<!-- evals:end -->`);
-  writeFileSync(readme, body);
+// 两份 README 里的列表（英文版 README.md、中文版 README.zh-CN.md）
+const lists = {
+  'README.md': ['| Demo | Models |', (e) => `| [${e.titleEn || e.title}](${SITE}${e.slug}/) | ${(e.models ?? []).join(', ')} |`],
+  'README.zh-CN.md': ['| Demo | 模型 |', (e) => `| [${e.title}](${SITE}${e.slug}/) | ${(e.models ?? []).join(', ')} |`],
+};
+for (const [file, [head, row]] of Object.entries(lists)) {
+  const p = join(REPO, file);
+  if (!existsSync(p)) continue;
+  const body = readFileSync(p, 'utf8').replace(/<!-- evals:start -->[\s\S]*<!-- evals:end -->/,
+    `<!-- evals:start -->\n${head}\n|---|---|\n${evals.map(row).join('\n')}\n<!-- evals:end -->`);
+  writeFileSync(p, body);
 }
 console.log(`index.html：${evals.length} 个评测`);
