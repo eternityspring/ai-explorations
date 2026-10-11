@@ -8,7 +8,7 @@
 //   "files": { "index.html": "page.html", "orbit/frames/x": "orbit/frames/x", ... },   // 发布后的路径 → 源路径（文件或文件夹）
 //   "meta": { "title", "titleEn", "date", "tags", "tagsEn", "models", "summary", "summaryEn", "notes": [[中, 英]...],
 //             "demo": "index.html", "video": "demo.mp4", "cover": "cover.jpg",
-//             "nav": "bottom-left" }      // 角落导航的位置：bottom-left（默认）/ bottom-right / top-left / top-right，false = 不加
+//             "nav": "top-right" }        // 角落导航的位置：top-right（默认）/ top-left / bottom-right / bottom-left，false = 不加
 // }
 // 发布时会给 demo 里每个 .html 注入 assets/nav.js：页面角落一个小导航，能回到首页、打开这个 demo 在 GitHub 上的文件夹。
 import { execFileSync } from 'node:child_process';
@@ -36,7 +36,7 @@ for (const [to, from] of Object.entries(m.files)) {
 writeFileSync(join(dest, 'meta.json'), JSON.stringify({ slug: m.slug, ...m.meta }, null, 2) + '\n');
 
 // 注入角落导航（回首页 / 看源码）：路径按页面所在层级算，已经有的不重复加
-const navPos = m.meta?.nav ?? 'bottom-left';
+const navPos = m.meta?.nav ?? 'top-right';
 if (navPos !== false) {
   (function inject(d) {
     for (const f of readdirSync(d)) {
@@ -46,7 +46,7 @@ if (navPos !== false) {
       let html = readFileSync(p, 'utf8');
       if (html.includes('assets/nav.js')) continue;
       const depth = p.slice(REPO.length + 1).split('/').length - 1;
-      const tag = `<script src="${'../'.repeat(depth)}assets/nav.js" defer data-pos="${navPos}"></script>`;
+      const tag = `<script src="${'../'.repeat(depth)}assets/nav.js" async data-pos="${navPos}"></script>`;   // async：不等页面自己的脚本（比如从 CDN 下载 three.js），导航先出来
       html = /<\/body>/i.test(html) ? html.replace(/<\/body>(?![\s\S]*<\/body>)/i, `${tag}\n</body>`) : `${html}\n${tag}\n`;
       writeFileSync(p, html);
     }

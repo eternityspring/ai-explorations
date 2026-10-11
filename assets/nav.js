@@ -1,11 +1,11 @@
 // 每个 demo 页面角落里的小导航：回到「AI 探索笔记」首页、打开这个 demo 在 GitHub 上的文件夹。
-// 由 tools/publish.mjs 发布时自动注入：<script src="../assets/nav.js" defer data-pos="bottom-left"></script>
-// data-pos：bottom-left（默认）/ bottom-right / top-left / top-right。用 Shadow DOM，样式和 demo 页面互不影响。
+// 由 tools/publish.mjs 发布时自动注入：<script src="../assets/nav.js" async data-pos="top-right"></script>
+// data-pos：top-right（默认）/ top-left / bottom-right / bottom-left。用 Shadow DOM，样式和 demo 页面互不影响。
 (() => {
   const REPO = 'https://github.com/eternityspring/ai-explorations';
   const me = document.currentScript;
   if (!me || document.querySelector('[data-ai-explorations-nav]')) return;
-  const [v, h] = (me.dataset.pos || 'bottom-left').split('-');
+  const [v, h] = (me.dataset.pos || 'top-right').split('-');
   const home = new URL('../', me.src);   // assets/ 的上一级就是首页
   const rel = location.pathname.startsWith(home.pathname) ? location.pathname.slice(home.pathname.length) : '';
   const slug = rel.split('/')[0];
