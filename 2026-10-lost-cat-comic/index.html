@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>寻猫 Lost Cat · 立体漫画</title>
+<meta name="description" content="Qwen Image 画的六格漫画，每格都能拖着绕角色转 360°。A six-panel comic where every panel spins 360° as you drag it.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="寻猫 Lost Cat · 一页可以转的漫画">
+<meta property="og:description" content="Qwen Image 画的六格漫画，每格都能拖着绕角色转 360°。A six-panel comic where every panel spins 360° as you drag it.">
+<meta property="og:url" content="https://eternityspring.github.io/ai-explorations/2026-10-lost-cat-comic/">
+<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/2026-10-lost-cat-comic/cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root { --desk:#2b2723; --desk2:#191614; --ui:#fffdf8; --ui-ink:#1b1a18; --muted:#8a8378; --accent:#e0452b; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --desk:#181614; --desk2:#0a0908; --ui:#26231f; --ui-ink:#efebe3; --muted:#a39c90; } }
+:root[data-theme="dark"] { --desk:#181614; --desk2:#0a0908; --ui:#26231f; --ui-ink:#efebe3; --muted:#a39c90; }
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; overflow:hidden; }
+body { background:radial-gradient(ellipse at 50% 42%, var(--desk), var(--desk2)); color:var(--ui-ink);
+  font:14px/1.5 "PingFang SC","Hiragino Sans GB","Noto Sans SC",sans-serif; -webkit-font-smoothing:antialiased; }
+canvas { position:fixed; inset:0; width:100%; height:100%; display:block; touch-action:none; outline:none; }
+.help { position:fixed; top:10px; left:50%; transform:translateX(-50%); max-width:calc(100% - 32px); text-align:center;
+  color:var(--ui-ink); font-size:13px; line-height:1.45; background:var(--ui); padding:6px 18px; border-radius:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,.35); transition:opacity .8s; pointer-events:none; }
+.help .en, .bar .en { display:block; font-size:11px; color:var(--muted); font-family:"Avenir Next","Helvetica Neue",Arial,sans-serif; }
+.help.off { opacity:0; }
+.bar { position:fixed; left:50%; bottom:12px; transform:translateX(-50%); display:flex; flex-wrap:wrap; justify-content:center; align-items:center;
+  gap:2px; max-width:calc(100% - 32px); padding:5px; border-radius:18px; background:var(--ui); color:var(--ui-ink); box-shadow:0 8px 28px rgba(0,0,0,.4); }
+.bar button { font:inherit; font-size:13px; line-height:1.25; border:0; background:none; color:inherit; padding:5px 14px; border-radius:13px; cursor:pointer; white-space:nowrap; }
+.bar button:hover { background:rgba(127,127,127,.16); }
+.bar button:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+.bar button[aria-pressed="true"] { background:var(--ui-ink); color:var(--ui); }
+.bar button[aria-pressed="true"] .en { color:inherit; opacity:.7; }
+.bar .stat { font-size:12px; color:var(--muted); padding:0 10px; font-variant-numeric:tabular-nums; text-align:center; }
+.bar .stat:empty { display:none; }
+.bar a.mode { font-size:13px; line-height:1.25; color:var(--accent); text-decoration:none; padding:5px 14px; border-radius:13px; white-space:nowrap; text-align:center; }
+.bar a.mode:hover { background:rgba(127,127,127,.16); }
+.bar .tag { font-size:11px; font-weight:600; letter-spacing:.04em; color:var(--ui); background:var(--accent); border-radius:8px; padding:3px 8px; margin:0 4px 0 6px; white-space:nowrap; }
+.focus-only { display:none !important; }
+body.focus .focus-only { display:inline-block !important; }
+body.focus .page-only { display:none !important; }
+.sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+@media (max-width:560px) { .bar button { padding:5px 9px; } .help { font-size:12px; } }
+</style>
+</head>
+<body>
+<h1 class="sr">寻猫 <span lang="en">Lost Cat</span></h1>
+<ol class="sr"><li>早上醒来，团子不见了。 <span lang="en">When she woke up, Tuanzi was gone.</span></li><li>小满把寻猫启事贴满了整条街。 <span lang="en">Xiaoman covered the whole street with "Lost Cat" posters.</span></li><li>鱼摊的大叔说，今天没见过它。 <span lang="en">The fishmonger said he hadn't seen it all day.</span></li><li>她爬上天台，喊了一遍又一遍。 <span lang="en">She climbed onto the roof and called, again and again.</span></li><li>天黑了，下雨了，团子还是没有回来。 <span lang="en">Night fell, the rain came, and Tuanzi still hadn't come home.</span></li><li>回到家，她打开书包——团子打了个哈欠。 <span lang="en">Back home, she opened her backpack — and Tuanzi yawned.</span></li></ol>
+<div class="help" id="help"></div>
+<div class="bar" role="toolbar" aria-label="漫画操作 Comic controls">
+  <span class="tag" id="tag"></span>
+  <button class="focus-only" id="prev">‹ 上一格<span class="en" lang="en">Prev</span></button>
+  <button class="focus-only" id="back">返回整页<span class="en" lang="en">Whole page</span></button>
+  <button class="focus-only" id="next">下一格 ›<span class="en" lang="en">Next</span></button>
+  <button id="spin" aria-pressed="false"></button>
+  <button id="reset">复位<span class="en" lang="en">Reset</span></button>
+  <button id="ink" aria-pressed="true">网点<span class="en" lang="en">Halftone</span></button>
+  <span class="stat" id="stat" aria-live="polite"></span>
+  <a class="mode" id="other"></a>
+</div>
+<div id="videos" aria-hidden="true" style="position:fixed;left:0;top:0;width:2px;height:2px;overflow:hidden;opacity:0;pointer-events:none"></div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+const DATA = {"title":"寻猫","titleEn":"Lost Cat","source":"frames","other":"","publish":true,"eggPhoto":"orbit/egg/tuanzi.jpg","panels":[{"id":"p1","no":1,"caption":"早上醒来，团子不见了。","frames":"orbit/frames/cat_p1_v2_s20260926/","n":123,"vid":"orbit/vid_intra/cat_p1_v2_s20260926.mp4","en":"When she woke up, Tuanzi was gone.","cap":"tr","dial":"br","eggs":[{"type":"meow","at":[0.775,0.45]}],"talk":[{"type":"bubble","text":"团子？","en":"Tuanzi?","at":[0.2,0.15],"tail":[0.43,0.36]}]},{"id":"p2","no":2,"caption":"小满把寻猫启事贴满了整条街。","frames":"orbit/frames/cat_p2_s20260926/","n":123,"vid":"orbit/vid_intra/cat_p2_s20260926.mp4","en":"Xiaoman covered the whole street with \"Lost Cat\" posters.","cap":"tr","capW":0.9,"dial":"bl","eggs":[{"type":"poster","rect":[0.58,0.11,0.685,0.33]},{"type":"meow","at":[0.384,0.47]}]},{"id":"p3","no":3,"caption":"鱼摊的大叔说，今天没见过它。","frames":"orbit/frames/cat_p3_v2_s20260926/","n":123,"vid":"orbit/vid_intra/cat_p3_v2_s20260926.mp4","en":"The fishmonger said he hadn't seen it all day.","cap":"tl","capW":0.66,"dial":"bl","eggs":[{"type":"meow","at":[0.247,0.484]}],"talk":[{"type":"bubble","text":"没见过啊。","en":"Haven't seen it.","at":[0.8,0.12],"tail":[0.62,0.22]}]},{"id":"p4","no":4,"caption":"她爬上天台，喊了一遍又一遍。","frames":"orbit/frames/cat_p4_v2_s20260926/","n":123,"vid":"orbit/vid_intra/cat_p4_v2_s20260926.mp4","en":"She climbed onto the roof and called, again and again.","cap":"bl","capW":0.84,"dial":"tr","eggs":[{"type":"meow","at":[0.647,0.444]}],"talk":[{"type":"shout","text":"团子——！","en":"TUANZI—!","at":[0.26,0.11],"tail":[0.45,0.24]}]},{"id":"p5","no":5,"caption":"天黑了，下雨了，团子还是没有回来。","frames":"orbit/frames/cat_p5_s20260926/","n":123,"vid":"orbit/vid_intra/cat_p5_s20260926.mp4","en":"Night fell, the rain came, and Tuanzi still hadn't come home.","cap":"tl","capW":0.7,"dial":"tr","eggs":[{"type":"meow","at":[0.67,0.57]}]},{"id":"p6","no":6,"caption":"回到家，她打开书包——团子打了个哈欠。","frames":"orbit/frames/cat_p6_v2_s20260926/","n":123,"vid":"orbit/vid_intra/cat_p6_v2_s20260926.mp4","en":"Back home, she opened her backpack — and Tuanzi yawned.","cap":"tr","capW":0.33,"dial":"br","talk":[{"type":"bubble","text":"团子！","en":"Tuanzi!","at":[0.18,0.14],"tail":[0.4,0.27]},{"type":"sfx","text":"哈啊～","en":"yawn~","at":[0.76,0.56],"rot":-12}]}]};
+const P = DATA.panels;
+const $ = (id) => document.getElementById(id);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const BAR = 70;              // 底部工具栏占的高度（px），整页摆在它上面
+const UNIT = 32;             // 文字卡片：每个页面单位多少画布像素
+const GUTTER = 1.0, BORDER = 0.42;   // 格缝、黑框粗细（页面单位）
+const MX = 1.8, TOP = 12;            // 页边距、上方标题栏到第一排格子的距离
+const SPIN_DEG_S = 40;       // 自动转动 9 秒一圈
+// 两种取帧方式，用来对比：frames = 每格 123 张 JPG，换帧就是换纹理的图片；
+// video = 每格一个全关键帧 mp4 + THREE.VideoTexture，换帧就是把视频 currentTime 跳到那一帧
+const VIDEO = DATA.source === 'video', FPS = 24;
+
+// ---------- 版式：横版，一排三格、两排；页面单位，左上为原点、y 向下；每格由上、右、下、左四条线围成，线可以斜，上下两排的竖线错开 ----------
+const L = (() => {
+  const W = 160, H = 108, R = W - MX, B = H - MX;
+  return { W, H, font: 1.8, en: 0.74, capMax: 46, talkFont: 1.9,
+    lines: { T: [[MX, TOP], [R, TOP]], B: [[MX, B], [R, B]], L: [[MX, TOP], [MX, B]], R: [[R, TOP], [R, B]],
+             H1: [[MX, 59], [R, 53]], V1: [[62, TOP], [58, 57]], V2: [[104, TOP], [108, 55]], V3: [[50, 58], [56, B]], V4: [[100, 56], [94, B]] },
+    panels: [['T', 'V1', 'H1', 'L'], ['T', 'V2', 'H1', 'V1'], ['T', 'R', 'H1', 'V2'], ['H1', 'V3', 'B', 'L'], ['H1', 'V4', 'B', 'V3'], ['H1', 'R', 'B', 'V4']] };
+})();
+const PAGE_EDGES = new Set(['T', 'B', 'L', 'R']);
+
+function intersect([[x1, y1], [x2, y2]], [[x3, y3], [x4, y4]]) {
+  const d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+  const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / d;
+  return [x1 + t * (x2 - x1), y1 + t * (y2 - y1)];
+}
+function shiftToward([a, b], dist, pt) {
+  let nx = a[1] - b[1], ny = b[0] - a[0];
+  const len = Math.hypot(nx, ny); nx /= len; ny /= len;
+  if ((pt[0] - a[0]) * nx + (pt[1] - a[1]) * ny < 0) { nx = -nx; ny = -ny; }
+  return [[a[0] + nx * dist, a[1] + ny * dist], [b[0] + nx * dist, b[1] + ny * dist]];
+}
+// 一格的四个角（世界坐标，y 向上，顺序 左上 右上 右下 左下），格间留出 GUTTER
+function panelPoly(edges) {
+  const ln = edges.map((k) => L.lines[k]);
+  const corners = (l) => [intersect(l[0], l[3]), intersect(l[0], l[1]), intersect(l[2], l[1]), intersect(l[2], l[3])];
+  const raw = corners(ln);
+  const c = raw.reduce((s, p) => [s[0] + p[0] / 4, s[1] + p[1] / 4], [0, 0]);
+  const pts = corners(ln.map((l, i) => (PAGE_EDGES.has(edges[i]) ? l : shiftToward(l, GUTTER / 2, c))));
+  return pts.map(([x, y]) => new THREE.Vector2(x - L.W / 2, L.H / 2 - y));
+}
+// 每条边写成 n·p + c ≥ 0（格内为正），给着色器算到边框的距离；顺序 上 右 下 左
+function edgeEqs(poly) {
+  const cen = poly.reduce((s, p) => s.add(p.clone().multiplyScalar(0.25)), new THREE.Vector2());
+  return poly.map((a, i) => {
+    const b = poly[(i + 1) % 4];
+    const n = new THREE.Vector2(b.y - a.y, a.x - b.x).normalize();
+    let c = -n.dot(a);
+    if (n.dot(cen) + c < 0) { n.negate(); c = -c; }
+    return new THREE.Vector3(n.x, n.y, c);
+  });
+}
+
+// ---------- three.js ----------
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.domElement.setAttribute('role', 'img');
+renderer.domElement.setAttribute('aria-label', `《${DATA.title}》${DATA.titleEn}：六格漫画，拖动每一格可以绕着角色转 / a six-panel comic, drag a panel to circle around the characters`);
+renderer.domElement.tabIndex = 0;
+document.body.prepend(renderer.domElement);
+const scene = new THREE.Scene();
+const cam = new THREE.PerspectiveCamera(26, 1, 1, 3000);
+const look = new THREE.Vector3(), tPos = new THREE.Vector3(), tLook = new THREE.Vector3();
+
+// ---------- 每格的状态和帧 ----------
+const S = P.map((p) => {
+  const s = { angle: 0, vel: 0, spin: false, reset: false, wig: -1, lift: 0, dialA: 0, dim: 0, imgs: [], loaded: 0, shown: null };
+  if (!VIDEO) {
+    s.tex = new THREE.Texture();
+    s.tex.minFilter = THREE.LinearMipmapLinearFilter; s.tex.magFilter = THREE.LinearFilter; s.tex.anisotropy = 4;
+    return s;
+  }
+  // 视频放进页面里一个看不见的小容器（不能 display:none，有的浏览器那样就不解码了）
+  const v = document.createElement('video');
+  v.muted = true; v.playsInline = true; v.preload = 'auto';
+  $('videos').append(v);
+  s.v = v; s.tex = new THREE.VideoTexture(v); s.tex.minFilter = THREE.LinearFilter; s.tex.magFilter = THREE.LinearFilter;
+  s.want = 0; s.cur = -1; s.pending = -1; s.busy = false; s.ready = false;
+  v.addEventListener('loadeddata', () => { s.ready = true; s.loaded = p.n; seekTo(s, s.want); });
+  v.addEventListener('seeked', () => {
+    seekStats.push(performance.now() - s.t0); if (seekStats.length > 60) seekStats.shift();
+    s.busy = false; s.cur = s.pending; s.tex.needsUpdate = true;   // 暂停中的视频跳完不一定触发 requestVideoFrameCallback，手动标一下
+    if (s.want !== s.cur) seekTo(s, s.want);
+  });
+  // 先把整个 mp4 下载成 Blob 再给 video：之后跳到任何一帧都在本地，不用每次向服务器要一段（远程服务器每次要等 1–3 秒）
+  s.bytes = 0; s.total = 0;
+  (async () => {
+    try {
+      const r = await fetch(p.vid);
+      s.total = +r.headers.get('content-length') || 0;
+      const reader = r.body.getReader(), parts = [];
+      for (;;) { const { done, value } = await reader.read(); if (done) break; parts.push(value); s.bytes += value.length; }
+      v.src = URL.createObjectURL(new Blob(parts, { type: 'video/mp4' }));
+      s.total = s.bytes;
+    } catch { v.src = p.vid; }   // 下载失败就退回直接播放网址
+  })();
+  return s;
+});
+const seekStats = [];
+const START = +new URLSearchParams(location.search).get('angle') || 0;   // ?angle=120：打开时所有格子转到这个角度（对比、截图用）
+S.forEach((s) => { s.angle = START; });
+// 同一格同时只发一个跳转；跳完再追最新的目标帧，拖得快时中间的帧直接跳过
+function seekTo(s, f) {
+  s.want = f;
+  if (!s.ready || s.busy || s.cur === f) return;
+  s.busy = true; s.pending = f; s.t0 = performance.now();
+  s.v.currentTime = (f + 0.5) / FPS;
+}
+function coarseToFine(n) {   // 64, 32, 96, 16, 48…：先粗后细，没到的帧先用最近的顶上
+  const out = [];
+  for (let step = 64; step >= 1; step >>= 1) for (let f = step; f < n; f += step * 2) out.push(f);
+  return out;
+}
+const queue = P.map((p, i) => [i, 0]);
+const orders = P.map((p) => coarseToFine(p.n));
+for (let k = 0; k < Math.max(...orders.map((o) => o.length)); k++) orders.forEach((o, i) => { if (k < o.length) queue.push([i, o[k]]); });
+const TOTAL = queue.length;
+let loadedAll = 0, qi = 0;
+async function worker() {
+  while (qi < queue.length) {
+    const [i, f] = queue[qi++], im = new Image();
+    try {
+      await new Promise((ok, bad) => { im.onload = ok; im.onerror = bad; im.src = `${P[i].frames}${String(f).padStart(3, '0')}.jpg`; });
+      im.decode().catch(() => {});   // 预解码但不等：后台标签页里 decode() 可能一直不返回
+      S[i].imgs[f] = im; S[i].loaded++;
+    } catch {}
+    loadedAll++;
+    const pct = Math.round((loadedAll / TOTAL) * 100);
+    $('stat').innerHTML = loadedAll < TOTAL ? `载入画面 ${pct}%<span class="en" lang="en">Loading ${pct}%</span>` : '';
+  }
+}
+if (!VIDEO) for (let k = 0; k < 8; k++) worker();
+function nearest(i, f) {
+  const s = S[i], n = P[i].n;
+  for (let d = 0; d <= n / 2; d++) { const a = s.imgs[(f + d) % n] ?? s.imgs[(f - d + n) % n]; if (a) return a; }
+  return null;
+}
+
+// ---------- 文字卡片（旁白框 / 对白气泡 / 喊叫 / 拟声词 / 标题），中文在上、英文在下，画在 Canvas 上贴进三维里 ----------
+const u = (v) => v * UNIT;
+const SERIF = '"Songti SC","Noto Serif SC","STSong",serif';
+const SANS = '"PingFang SC","Hiragino Sans GB","Noto Sans SC",sans-serif';
+const KAI = '"Kaiti SC","STKaiti","KaiTi","BiauKai","Songti SC",serif';
+const EN_SERIF = '"Iowan Old Style","Palatino","Georgia","Times New Roman",serif';
+const EN_SANS = '"Avenir Next","Helvetica Neue",Arial,sans-serif';
+const NO_START = '，。！？、；：」』）…～—';
+const scratch = document.createElement('canvas').getContext('2d');
+function wrap(ctx, text, maxPx) {   // 中文按字断行（标点不放行首），英文按词断行
+  if (!text) return [];
+  const latin = /^[\x00-ɏ—‘-”\s]+$/.test(text);
+  const units = latin ? text.split(/(?<=\s)/) : [...text];
+  const lines = []; let line = '';
+  for (const t of units) {
+    if (line && ctx.measureText((line + t).trimEnd()).width > maxPx && !NO_START.includes(t)) { lines.push(line.trimEnd()); line = t.trimStart(); } else line += t;
+  }
+  if (line.trim()) lines.push(line.trimEnd());
+  return lines;
+}
+// 排一段中英文：返回每行的字体、文字、行中心 y，以及整块宽高（页面单位）
+function layoutText(zh, en, f, fe, zhFont, enFont, maxW) {
+  const rows = []; let y = 0, w = 0;
+  scratch.font = zhFont(f);
+  for (const l of wrap(scratch, zh, u(maxW))) { rows.push({ font: zhFont(f), text: l, y: y + f * 0.56 }); w = Math.max(w, scratch.measureText(l).width); y += f * 1.42; }
+  if (en) {
+    y += f * 0.04;
+    scratch.font = enFont(fe);
+    for (const l of wrap(scratch, en, u(maxW))) { rows.push({ font: enFont(fe), text: l, y: y + fe * 0.6, en: true }); w = Math.max(w, scratch.measureText(l).width); y += fe * 1.3; }
+    y -= fe * 0.3;
+  } else y -= f * 0.42;
+  return { rows, w: w / UNIT, h: y };
+}
+function cardMesh(canvas, z) {
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(canvas.width / UNIT, canvas.height / UNIT),
+    new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false }));
+  m.position.z = z;
+  return m;
+}
+function captionCanvas(zh, en, maxW) {
+  const f = L.font, fe = f * L.en, pad = f * 0.6, m = 0.3;
+  const t = layoutText(zh, en, f, fe, (s) => `600 ${u(s)}px ${SERIF}`, (s) => `italic 500 ${u(s)}px ${EN_SERIF}`, maxW - pad * 2);
+  const bw = t.w + pad * 2, bh = t.h + pad * 2;
+  const c = document.createElement('canvas'); c.width = Math.ceil(u(bw + m * 2)); c.height = Math.ceil(u(bh + m * 2));
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#fffdf2'; ctx.strokeStyle = '#121212'; ctx.lineWidth = u(0.2);
+  ctx.fillRect(u(m), u(m), u(bw), u(bh)); ctx.strokeRect(u(m), u(m), u(bw), u(bh));
+  ctx.textBaseline = 'middle';
+  for (const r of t.rows) { ctx.font = r.font; ctx.fillStyle = r.en ? '#4a443c' : '#151413'; ctx.fillText(r.text, u(m + pad), u(m + pad + r.y)); }
+  return c;
+}
+// 气泡：中心在 (0,0)，tip 是尾巴尖相对中心的位置（页面单位，y 向上）；返回画布和画布中心相对气泡中心的偏移
+function talkCanvas(tk, tip) {
+  const shout = tk.type === 'shout', f = L.talkFont * (shout ? 1.04 : 1), fe = f * 0.66;
+  const t = layoutText(tk.text, tk.en, f, fe, (s) => `${shout ? 900 : 600} ${u(s)}px ${SANS}`, (s) => `${shout ? 800 : 600} ${u(s)}px ${EN_SANS}`, f * 8);
+  const rx = t.w / 2 * 1.3 + f * 0.75, ry = t.h / 2 * 1.38 + f * 0.6;
+  const tipC = [tip[0], -tip[1]];   // 画布 y 向下
+  const k = shout ? 1.3 : 1;
+  const xs = [-rx * k, rx * k, tipC[0]], ys = [-ry * k, ry * k, tipC[1]], m = 0.6;
+  const x0 = Math.min(...xs) - m, x1 = Math.max(...xs) + m, y0 = Math.min(...ys) - m, y1 = Math.max(...ys) + m;
+  const c = document.createElement('canvas'); c.width = Math.ceil(u(x1 - x0)); c.height = Math.ceil(u(y1 - y0));
+  const ctx = c.getContext('2d');
+  ctx.translate(u(-x0), u(-y0));
+  ctx.lineJoin = 'round'; ctx.fillStyle = '#ffffff'; ctx.strokeStyle = '#121212'; ctx.lineWidth = u(shout ? 0.26 : 0.2);
+  const th0 = Math.atan2(tipC[1] / ry, tipC[0] / rx);
+  const hasTail = Math.hypot(tipC[0] / rx, tipC[1] / ry) > 1.05;
+  ctx.beginPath();
+  if (shout) {
+    const N = 22, tailK = Math.round(((th0 / (Math.PI * 2)) * N + N) % N);
+    for (let j = 0; j < N; j++) {
+      const a = (j / N) * Math.PI * 2, r = j % 2 === 0 ? 1.24 + 0.07 * Math.sin(j * 2.7) : 0.98;
+      const [x, y] = hasTail && j === tailK ? tipC : [Math.cos(a) * rx * r, Math.sin(a) * ry * r];
+      j ? ctx.lineTo(u(x), u(y)) : ctx.moveTo(u(x), u(y));
+    }
+    ctx.closePath();
+  } else if (hasTail) {
+    const dl = 0.26;
+    ctx.ellipse(0, 0, u(rx), u(ry), 0, th0 + dl, th0 - dl + Math.PI * 2);
+    ctx.lineTo(u(tipC[0]), u(tipC[1]));
+    ctx.closePath();
+  } else ctx.ellipse(0, 0, u(rx), u(ry), 0, 0, Math.PI * 2);
+  ctx.fill(); ctx.stroke();
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (const r of t.rows) { ctx.font = r.font; ctx.fillStyle = r.en ? '#3d3833' : '#121212'; ctx.fillText(r.text, 0, u(r.y - t.h / 2)); }
+  return { canvas: c, off: [(x0 + x1) / 2, -(y0 + y1) / 2] };
+}
+function sfxCanvas(zh, en) {
+  const f = L.talkFont * 1.7, fe = f * 0.5;
+  scratch.font = `900 ${u(f)}px ${SANS}`; const wz = scratch.measureText(zh).width;
+  scratch.font = `italic 900 ${u(fe)}px ${EN_SANS}`; const we = scratch.measureText(en ?? '').width;
+  const w = Math.max(wz, we) / UNIT + 2, h = f * 1.3 + (en ? fe * 1.3 : 0) + 0.6;
+  const c = document.createElement('canvas'); c.width = Math.ceil(u(w)); c.height = Math.ceil(u(h));
+  const ctx = c.getContext('2d');
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+  const draw = (text, font, y, scale) => {
+    ctx.font = font;
+    ctx.lineWidth = u(0.95 * scale); ctx.strokeStyle = '#ffffff'; ctx.strokeText(text, c.width / 2, y);
+    ctx.lineWidth = u(0.36 * scale); ctx.strokeStyle = '#141414'; ctx.strokeText(text, c.width / 2, y);
+    ctx.fillStyle = '#f39a2b'; ctx.fillText(text, c.width / 2, y);
+  };
+  draw(zh, `900 ${u(f)}px ${SANS}`, u(0.3 + f * 0.65), 1);
+  if (en) draw(en, `italic 900 ${u(fe)}px ${EN_SANS}`, u(0.3 + f * 1.3 + fe * 0.6), 0.6);
+  return c;
+}
+function titleCanvas() {
+  const c = document.createElement('canvas'); c.width = Math.ceil(u(L.W - 8)); c.height = Math.ceil(u(10));
+  const ctx = c.getContext('2d');
+  ctx.textBaseline = 'alphabetic';
+  ctx.font = `900 ${u(6.6)}px ${KAI}`; ctx.fillStyle = '#121110';
+  ctx.fillText(DATA.title, u(1), u(7.9));
+  const tw = ctx.measureText(DATA.title).width;
+  // 红印章：第一话 / CH.1
+  const sx = tw + u(2.4);
+  ctx.fillStyle = '#d6402a'; ctx.fillRect(sx, u(2.4), u(3.6), u(5.6));
+  ctx.textAlign = 'center'; ctx.fillStyle = '#fff';
+  ctx.font = `700 ${u(1.5)}px ${SANS}`; ctx.fillText('第', sx + u(1.8), u(4.2)); ctx.fillText('一话', sx + u(1.8), u(5.9));
+  ctx.font = `700 ${u(0.95)}px ${EN_SANS}`; ctx.fillText('CH.1', sx + u(1.8), u(7.4));
+  // 英文标题 + 中英两行操作说明
+  const tx = sx + u(5.2);
+  ctx.textAlign = 'left';
+  ctx.font = `italic 600 ${u(2.3)}px ${EN_SERIF}`; ctx.fillStyle = '#121110'; ctx.fillText(DATA.titleEn, tx, u(4.3));
+  ctx.font = `500 ${u(1.35)}px ${SANS}`; ctx.fillStyle = '#7d766b'; ctx.fillText('拖动画格，绕着角色转一圈', tx, u(6.3));
+  ctx.font = `italic 500 ${u(1.25)}px ${EN_SERIF}`; ctx.fillText('Drag a panel to circle around the characters', tx, u(8.0));
+  return c;
+}
+
+// ---------- 搭一页 ----------
+const panelVS = 'varying vec2 vP; void main(){ vP = position.xy; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }';
+const panelFS = `
+  uniform sampler2D map; uniform float hasMap, border, ink, cell, dim, dialR, dialA, ang;
+  uniform vec3 edges[4]; uniform vec2 imgC, imgS, dialP;
+  varying vec2 vP;
+  void main(){
+    float d = 1e9;
+    for (int i = 0; i < 4; i++) d = min(d, dot(edges[i].xy, vP) + edges[i].z);
+    float aa = fwidth(d);
+    vec3 col = hasMap > 0.5 ? texture2D(map, (vP - imgC) / imgS + 0.5).rgb : vec3(0.84, 0.81, 0.76);
+    col = clamp((col - 0.5) * 1.07 + 0.52, 0.0, 1.0);
+    // 网点：暗部叠一层 45° 的圆点，像印刷
+    float lum = dot(col, vec3(0.299, 0.587, 0.114));
+    vec2 g = mat2(0.7071, -0.7071, 0.7071, 0.7071) * gl_FragCoord.xy / cell;
+    float rad = sqrt(clamp(1.0 - lum, 0.0, 1.0)) * 0.52;
+    float dotm = 1.0 - smoothstep(rad - 0.08, rad + 0.08, length(fract(g) - 0.5));
+    col *= 1.0 - ink * 0.34 * dotm * smoothstep(0.9, 0.12, lum);
+    // 角度表
+    float r = length(vP - dialP), fa = fwidth(r);
+    float disk = 1.0 - smoothstep(dialR * 1.5 - fa, dialR * 1.5 + fa, r);
+    float ring = 1.0 - smoothstep(dialR * 0.11 - fa, dialR * 0.11 + fa, abs(r - dialR));
+    float knob = 1.0 - smoothstep(dialR * 0.33 - fa, dialR * 0.33 + fa, length(vP - dialP - dialR * vec2(sin(ang), cos(ang))));
+    col = mix(col, vec3(0.05), disk * 0.62 * dialA);
+    col = mix(col, vec3(1.0), ring * 0.5 * dialA);
+    col = mix(col, vec3(1.0), knob * dialA);
+    col = mix(col, vec3(0.09, 0.08, 0.07), dim);
+    gl_FragColor = vec4(mix(vec3(0.06), col, smoothstep(border - aa, border + aa, d)), 1.0);
+  }`;
+
+let page = null, M = [], inkOn = true;
+function build() {
+  page = new THREE.Group(); scene.add(page);
+  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(L.W, L.H), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35 }));
+  shadow.position.set(1.3, -1.8, -0.6); page.add(shadow);
+  page.add(new THREE.Mesh(new THREE.PlaneGeometry(L.W, L.H), new THREE.MeshBasicMaterial({ color: 0xf8f4ea })));
+  const tc = titleCanvas(), title = cardMesh(tc, 0.05);
+  title.position.set(-L.W / 2 + MX + 0.4 + tc.width / UNIT / 2, L.H / 2 - 1.1 - tc.height / UNIT / 2, 0.05); page.add(title);
+  const cell = 4.2 * renderer.getPixelRatio(), corner = { tl: 0, tr: 1, br: 2, bl: 3 };
+  M = L.panels.map((edges, i) => {
+    const p = P[i], poly = panelPoly(edges), eqs = edgeEqs(poly);
+    const xs = poly.map((v) => v.x), ys = poly.map((v) => v.y);
+    const bb = { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
+    bb.w = bb.x1 - bb.x0; bb.h = bb.y1 - bb.y0; bb.cx = (bb.x0 + bb.x1) / 2; bb.cy = (bb.y0 + bb.y1) / 2;
+    const iw = Math.max(bb.w, bb.h * 4 / 3) * 1.03, imgS = new THREE.Vector2(iw, iw * 0.75), imgC = new THREE.Vector2(bb.cx, bb.cy);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(poly.flatMap((v) => [v.x, v.y, 0]), 3));
+    geo.setIndex([0, 1, 2, 0, 2, 3]);
+    const cen = poly.reduce((s, v) => s.add(v.clone().multiplyScalar(0.25)), new THREE.Vector2());
+    const dc = poly[corner[p.dial ?? 'tr']], dialP = dc.clone().add(cen.clone().sub(dc).normalize().multiplyScalar(4.4));
+    const mat = new THREE.ShaderMaterial({
+      vertexShader: panelVS, fragmentShader: panelFS, side: THREE.DoubleSide,
+      uniforms: { map: { value: S[i].tex }, hasMap: { value: S[i].shown || S[i].cur >= 0 ? 1 : 0 }, border: { value: BORDER }, ink: { value: inkOn ? 1 : 0 },
+        cell: { value: cell }, dim: { value: 0 }, edges: { value: eqs }, imgC: { value: imgC }, imgS: { value: imgS },
+        dialP: { value: dialP }, dialR: { value: 1.25 }, dialA: { value: 0 }, ang: { value: 0 } },
+    });
+    const group = new THREE.Group(); group.position.z = 0.05; page.add(group);
+    const mesh = new THREE.Mesh(geo, mat); mesh.userData.i = i; group.add(mesh);
+    const sh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0, side: THREE.DoubleSide }));
+    sh.position.set(0.9, -0.9, 0.02); page.add(sh);
+
+    // 旁白框：骑在格子的上边或下边框线上，伸出框线 OUT 个单位（格缝处比格缝窄、页边处比页边距窄，碰不到隔壁格），顺着斜边转一点
+    const capC = captionCanvas(p.caption, p.en, Math.min(L.capMax, bb.w * (p.capW ?? 0.8)));
+    const cw = capC.width / UNIT, ch = capC.height / UNIT, ck = p.cap ?? 'tl';
+    const edge = eqs[ck[0] === 't' ? 0 : 2], side = eqs[ck[1] === 'l' ? 3 : 1];
+    const OUT = PAGE_EDGES.has(edges[ck[0] === 't' ? 0 : 2]) ? MX * 0.85 : GUTTER * 0.75;
+    const rot = ck[0] === 't' ? Math.atan2(edge.x, -edge.y) : Math.atan2(-edge.x, edge.y);
+    const along = new THREE.Vector2(Math.cos(rot), Math.sin(rot));
+    const yOn = (x) => -(edge.x * x + edge.z) / edge.y;   // 框线上横坐标 x 处的 y
+    // 从角上沿框线往格子里挪，直到框的四个角都离侧边框 1.6 以上
+    const sink = ch / 2 - OUT, dir = ck[1] === 'l' ? 1 : -1;
+    let bx = 0, by = 0;
+    for (let k = 0, ex = poly[corner[ck]].x; k < 200; k++, ex += dir * 0.2) {
+      bx = ex + edge.x * sink; by = yOn(ex) + edge.y * sink;
+      const pts = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => [bx + along.x * a * cw / 2 - along.y * b * ch / 2, by + along.y * a * cw / 2 + along.x * b * ch / 2]);
+      if (pts.every(([x, y]) => side.x * x + side.y * y + side.z >= 1.6)) break;
+    }
+    const cap = cardMesh(capC, 0.45); cap.position.set(bx, by, 0.45); cap.rotation.z = rot; group.add(cap);
+
+    // 对白：位置按 0° 那帧的画面算，转开以后淡出
+    const toWorld = ([x, y]) => [imgC.x + (x - 0.5) * imgS.x, imgC.y + (0.5 - y) * imgS.y];
+    const talks = (p.talk ?? []).map((t) => {
+      let [x, y] = toWorld(t.at);
+      if (t.type === 'sfx') {
+        const m = cardMesh(sfxCanvas(t.text, t.en), 0.7);
+        m.position.set(x, y, 0.7); m.rotation.z = (t.rot ?? 0) * Math.PI / 180; group.add(m); return m;
+      }
+      const tk = t.type === 'shout' ? 0.74 : 0.86, tw0 = toWorld(t.tail);   // 尾巴收短一点，不戳到嘴上
+      const tip = () => [(tw0[0] - x) * tk, (tw0[1] - y) * tk];
+      const { canvas: c1, off: o } = talkCanvas(t, tip());
+      // 气泡要整个留在格内：哪条边越界就沿那条边的法线往里推，挪得最少
+      const hw = c1.width / UNIT / 2, hh = c1.height / UNIT / 2, need = BORDER + 0.25;
+      for (let k = 0; k < 6; k++) eqs.forEach((e) => {
+        const cx = x + o[0], cy = y + o[1];
+        const mn = Math.min(...[[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => e.x * (cx + a * hw) + e.y * (cy + b * hh) + e.z));
+        if (mn < need) { x += e.x * (need - mn); y += e.y * (need - mn); }
+      });
+      const { canvas: c2, off: o2 } = talkCanvas(t, tip());
+      const m = cardMesh(c2, 0.7); m.position.set(x + o2[0], y + o2[1], 0.7); group.add(m); return m;
+    });
+    return { group, mesh, mat, sh, talks, poly, bb, imgC, imgS };
+  });
+}
+
+// ---------- 镜头 ----------
+let focus = -1;
+function fitBox(cx, cy, w, h, pad) {
+  const t = Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)), vh = Math.max(200, innerHeight - BAR);
+  const dist = Math.max((h * pad) / (2 * t) * (innerHeight / vh), (w * pad) / (2 * t * cam.aspect));
+  const shift = (BAR / 2 / innerHeight) * 2 * dist * t;
+  tPos.set(cx, cy - shift, dist); tLook.set(cx, cy - shift, 0);
+}
+function fit(jump) {
+  if (focus >= 0) { const b = M[focus].bb; fitBox(b.cx, b.cy, b.w, b.h, 1.1); } else fitBox(0, 0, L.W, L.H, 1.03);
+  if (jump) { cam.position.copy(tPos); look.copy(tLook); }
+}
+function resize() {
+  renderer.setSize(innerWidth, innerHeight);
+  cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix();
+  fit(!page);
+}
+
+// ---------- 交互 ----------
+let hover = -1, drag = null, touched = false, helpTimer = 0;
+const tilt = new THREE.Vector2(), tiltT = new THREE.Vector2();
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+const canvas = renderer.domElement;
+function pickHit(e) {   // 点中哪一格，以及点在这一格画面里的哪里（u, v：0° 那帧画面里的 0–1 坐标，左上为原点）
+  ndc.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+  ray.setFromCamera(ndc, cam);
+  const h = ray.intersectObjects(M.map((m) => m.mesh), false)[0];
+  if (!h) return { i: -1 };
+  const i = h.object.userData.i, p = page.worldToLocal(h.point.clone()), m = M[i];
+  return { i, u: (p.x - m.imgC.x) / m.imgS.x + 0.5, v: 0.5 - (p.y - m.imgC.y) / m.imgS.y };
+}
+const pick = (e) => pickHit(e).i;
+function degPerPx(i) {
+  const worldPerPx = (2 * cam.position.z * Math.tan(THREE.MathUtils.degToRad(cam.fov / 2))) / innerHeight;
+  return 360 / ((M[i].bb.w / worldPerPx) * 1.4);
+}
+const HELP = {
+  page: ['拖动画格：绕着角色转 · 点一格：推近看 · 拖空白处：转动整页', 'Drag a panel to orbit · Click a panel to zoom in · Drag the margin to tilt the page'],
+  focus: ['拖动：绕着转 · ← → 旋转 · ↑ ↓ 换格 · Esc 返回整页', 'Drag to orbit · ← → rotate · ↑ ↓ next panel · Esc back to the page'],
+};
+function help([zh, en], ms) {
+  const h = $('help'); h.innerHTML = `${zh}<span class="en" lang="en">${en}</span>`; h.classList.remove('off');
+  clearTimeout(helpTimer); helpTimer = setTimeout(() => h.classList.add('off'), ms);
+}
+function interacted() { if (!touched) { touched = true; $('help').classList.add('off'); } }
+
+canvas.addEventListener('pointerdown', (e) => {
+  if (poster) { closePoster(); drag = null; return; }   // 启事开着时，点哪里都是把它贴回去
+  const h = pickHit(e), i = h.i;
+  drag = { i, u: h.u, v: h.v, kind: i >= 0 ? 'panel' : 'page', x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, t: performance.now(), moved: false };
+  try { canvas.setPointerCapture(e.pointerId); } catch {}
+  if (i >= 0) { S[i].vel = 0; S[i].reset = false; }
+});
+canvas.addEventListener('pointermove', (e) => {
+  if (!drag) {
+    if (poster) { hover = -1; canvas.style.cursor = 'default'; return; }
+    const h = pickHit(e); hover = h.i;
+    canvas.style.cursor = hover >= 0 ? (eggAt(h.i, h.u, h.v) ? 'pointer' : 'grab') : 'default';
+    if (focus < 0 && !reduced) tiltT.set(((e.clientY / innerHeight) - 0.5) * 0.05, ((e.clientX / innerWidth) - 0.5) * 0.07);
+    return;
+  }
+  const now = performance.now(), dx = e.clientX - drag.x, dt = Math.max(1, now - drag.t) / 1000;
+  if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) > 6 && !drag.moved) { drag.moved = true; interacted(); if (drag.i >= 0) S[drag.i].spin = false; syncButtons(); }
+  if (drag.moved && drag.kind === 'panel') {
+    const s = S[drag.i], d = dx * degPerPx(drag.i);
+    s.angle += d; s.vel = THREE.MathUtils.clamp(s.vel * 0.6 + (d / dt) * 0.4, -900, 900);
+    canvas.style.cursor = 'grabbing';
+  } else if (drag.moved) {
+    tiltT.set(THREE.MathUtils.clamp((e.clientY - drag.y0) * 0.0035, -0.5, 0.5), THREE.MathUtils.clamp((e.clientX - drag.x0) * 0.0035, -0.7, 0.7));
+  }
+  drag.x = e.clientX; drag.y = e.clientY; drag.t = now;
+});
+function endDrag() {
+  if (!drag) return;
+  const d = drag; drag = null;
+  if (d.kind === 'panel' && performance.now() - d.t > 80) S[d.i].vel = 0;
+  if (d.kind === 'page') tiltT.set(0, 0);
+  canvas.style.cursor = hover >= 0 ? 'grab' : 'default';
+  if (!d.moved) {
+    const g = d.kind === 'panel' ? eggAt(d.i, d.u, d.v) : null;
+    if (g) (g.type === 'poster' ? openPoster(d.i, g) : meow(d.i, g));
+    else if (d.kind === 'panel' && d.i !== focus) setFocus(d.i);
+    else if (d.kind === 'page' && focus >= 0) setFocus(-1);
+  }
+}
+canvas.addEventListener('pointerup', endDrag);
+canvas.addEventListener('pointercancel', endDrag);
+canvas.addEventListener('pointerleave', () => { if (!drag) { hover = -1; tiltT.set(0, 0); } });
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const i = focus >= 0 ? focus : pick(e);
+  if (i < 0 || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+  interacted(); S[i].spin = false; S[i].reset = false; S[i].vel = 0; syncButtons();
+  S[i].angle -= e.deltaX * degPerPx(i);
+}, { passive: false });
+
+function setFocus(i) {
+  focus = i;
+  document.body.classList.toggle('focus', i >= 0);
+  tiltT.set(0, 0);
+  fit(false); syncButtons();
+  help(i >= 0 ? HELP.focus : HELP.page, 4500);
+}
+
+// ---------- 彩蛋：点第 2 格电线杆上的寻猫启事 → 启事揭下来飞到眼前，盖上「已找到」；点书包口露出的猫尾巴 → 喵～ ----------
+// 位置写在 DATA 每格的 eggs 里（0° 那帧画面里的 0–1 坐标）；转开超过 EGG_DEV 度就不触发，因为启事、尾巴已经不在原来的位置
+const EGG_DEV = 8;
+const devOf = (i) => Math.abs(((S[i].angle % 360) + 540) % 360 - 180);
+function eggAt(i, u, v) {
+  if (i < 0 || u === undefined || devOf(i) > EGG_DEV || S[i].spin) return null;
+  for (const g of P[i].eggs ?? []) {
+    if (g.type === 'poster') { const [x0, y0, x1, y1] = g.rect; if (u > x0 - 0.01 && u < x1 + 0.01 && v > y0 - 0.01 && v < y1 + 0.01) return g; }
+    else if (Math.hypot((u - g.at[0]) * 4 / 3, v - g.at[1]) < 0.05) return g;
+  }
+  return null;
+}
+const imgLocal = (i, u, v) => new THREE.Vector3(M[i].imgC.x + (u - 0.5) * M[i].imgS.x, M[i].imgC.y + (0.5 - v) * M[i].imgS.y, 0);
+const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+const easeBack = (t) => 1 + 2.7 * Math.pow(t - 1, 3) + 1.7 * Math.pow(t - 1, 2);
+
+// 喵～：从尾巴的位置弹出来，往上飘，淡出
+const meows = [];
+function meow(i, g) {
+  const m = cardMesh(sfxCanvas('喵～', 'Meow~'), 1.2), p = imgLocal(i, ...g.at);   // 从尾巴的右上方冒出来，别被手指挡住
+  m.position.set(p.x + 2.2, p.y + 3.4, 1.2); m.rotation.z = (meows.length % 2 ? 1 : -1) * 0.16;
+  M[i].group.add(m); meows.push({ m, i, t0: performance.now(), y0: p.y + 3.4 });
+  interacted();
+}
+
+// 寻猫启事
+const eggImg = new Image();
+if (DATA.eggPhoto) eggImg.src = DATA.eggPhoto;
+function posterCanvas() {
+  const c = document.createElement('canvas'); c.width = 1200; c.height = 1600;
+  const x = c.getContext('2d');
+  x.fillStyle = '#fbf5e4'; x.fillRect(0, 0, 1200, 1600);
+  for (let k = 0; k < 2600; k++) { x.fillStyle = `rgba(120,95,60,${(k % 7) / 120})`; x.fillRect((k * 397) % 1200, (k * 613) % 1600, 2, 2); }   // 纸纹
+  // 标题
+  x.textAlign = 'center'; x.textBaseline = 'alphabetic';
+  x.fillStyle = '#c62f1e'; x.font = `900 210px ${KAI}`; x.fillText('寻 猫', 600, 245);
+  x.fillStyle = '#1a1714'; x.font = `800 62px ${EN_SERIF}`; x.letterSpacing = '14px'; x.fillText('LOST CAT', 607, 328); x.letterSpacing = '0px';
+  // 照片
+  const pw = 760, ph = 570, py = 378;
+  x.save(); x.translate(600, py + ph / 2); x.rotate(-0.025);
+  x.shadowColor = 'rgba(0,0,0,.28)'; x.shadowBlur = 20; x.shadowOffsetY = 8;
+  x.fillStyle = '#fff'; x.fillRect(-pw / 2 - 18, -ph / 2 - 18, pw + 36, ph + 36);
+  x.shadowColor = 'transparent';
+  if (eggImg.complete && eggImg.naturalWidth) x.drawImage(eggImg, -pw / 2, -ph / 2, pw, ph); else { x.fillStyle = '#ddd'; x.fillRect(-pw / 2, -ph / 2, pw, ph); }
+  x.restore();
+  // 信息，中英两行一组
+  const rows = [['名字：团子', 'Name: Tuanzi'], ['特征：橘色虎斑，胖乎乎，最爱钻书包', 'Orange tabby, chubby, loves crawling into backpacks'],
+    ['最后出现：小满的床底下', 'Last seen: under Xiaoman’s bed'], ['酬谢：一整罐小鱼干', 'Reward: a whole jar of dried fish']];
+  x.textAlign = 'left';
+  rows.forEach(([zh, en], k) => {
+    const y = 1012 + k * 80;
+    x.fillStyle = '#1a1714'; x.font = `600 40px ${SANS}`; x.fillText(zh, 110, y);
+    x.fillStyle = '#6b6156'; x.font = `italic 500 28px ${EN_SERIF}`; x.fillText(en, 112, y + 33);
+  });
+  // 底部撕条：竖排「☎ 小满 喵喵喵」，第 4 条已经被撕走了
+  const top = 1330, n = 8, tw = 1200 / n;
+  x.strokeStyle = '#8a8070'; x.lineWidth = 3; x.setLineDash([12, 10]);
+  x.beginPath(); x.moveTo(0, top); x.lineTo(1200, top); x.stroke();
+  for (let k = 1; k < n; k++) { x.beginPath(); x.moveTo(k * tw, top); x.lineTo(k * tw, 1600); x.stroke(); }
+  x.setLineDash([]);
+  for (let k = 0; k < n; k++) {
+    if (k === 3) {   // 撕掉的那条：挖空，上沿是毛边
+      x.save(); x.globalCompositeOperation = 'destination-out'; x.beginPath(); x.moveTo(k * tw + 3, 1600);
+      for (let j = 0; j <= 10; j++) x.lineTo(k * tw + 3 + (j / 10) * (tw - 6), top + 26 + (j % 2 ? 14 : 0));
+      x.lineTo(k * tw + tw - 3, 1600); x.closePath(); x.fill(); x.restore(); continue;
+    }
+    x.save(); x.translate(k * tw + tw / 2, top + 135); x.rotate(-Math.PI / 2);
+    x.textAlign = 'center'; x.fillStyle = '#2a2520'; x.font = `600 30px ${SANS}`; x.fillText('☎ 小满 喵喵喵', 0, 10);
+    x.restore();
+  }
+  // 胶带
+  const tape = (cx, cy, r) => { x.save(); x.translate(cx, cy); x.rotate(r); x.fillStyle = 'rgba(214,196,150,.72)'; x.fillRect(-120, -32, 240, 64); x.restore(); };
+  tape(110, 40, -0.6); tape(1090, 40, 0.6);
+  return c;
+}
+function stampCanvas() {
+  const c = document.createElement('canvas'); c.width = 900; c.height = 470;
+  const x = c.getContext('2d');
+  x.strokeStyle = x.fillStyle = '#d42a1c';
+  x.lineWidth = 14; x.beginPath(); x.roundRect(20, 20, 860, 430, 40); x.stroke();
+  x.lineWidth = 4; x.beginPath(); x.roundRect(44, 44, 812, 382, 26); x.stroke();
+  x.textAlign = 'center'; x.textBaseline = 'alphabetic';
+  x.font = `900 140px ${SANS}`; x.fillText('已找到！', 450, 210);
+  x.font = `800 52px ${SANS}`; x.fillText('其实一直在书包里', 450, 300);
+  x.font = `italic 800 40px ${EN_SANS}`; x.fillText('FOUND — in the backpack all along', 450, 372);
+  x.globalCompositeOperation = 'destination-out';   // 印泥不匀
+  for (let k = 0; k < 900; k++) { x.globalAlpha = ((k * 37) % 50) / 100; x.beginPath(); x.arc((k * 523) % 900, (k * 331) % 470, 1 + (k % 5), 0, 7); x.fill(); }
+  return c;
+}
+let poster = null;
+function openPoster(i, g) {
+  if (poster) return;
+  const mk = (cv) => { const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t; };
+  const mat = (o) => new THREE.MeshBasicMaterial({ transparent: true, depthTest: false, depthWrite: false, ...o });
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(0.75, 1), mat({ map: mk(posterCanvas()) })); mesh.renderOrder = 21;
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(0.75, 1), mat({ color: 0xe9e0c9 })); back.rotation.y = Math.PI; back.renderOrder = 21; mesh.add(back);
+  const drop = new THREE.Mesh(new THREE.PlaneGeometry(0.75, 1), mat({ color: 0x000000, opacity: 0 })); drop.position.set(0.02, -0.025, 0); drop.renderOrder = 20; mesh.add(drop);
+  const sc = stampCanvas(), sw = 0.5;   // 盖在照片里的书包上，不挡猫脸和下面的文字
+  const stamp = new THREE.Mesh(new THREE.PlaneGeometry(sw, sw * sc.height / sc.width), mat({ map: mk(sc), opacity: 0 }));
+  stamp.position.set(0.07, 0.03, 0); stamp.rotation.z = -0.2; stamp.renderOrder = 22; mesh.add(stamp);
+  const shade = new THREE.Mesh(new THREE.PlaneGeometry(5000, 5000), mat({ color: 0x0b0a09, opacity: 0 })); shade.renderOrder = 19;
+  scene.add(shade, mesh);
+  const [x0, y0, x1, y1] = g.rect;
+  const c = imgLocal(i, (x0 + x1) / 2, (y0 + y1) / 2); c.z = M[i].group.position.z + 0.1;
+  page.updateMatrixWorld();
+  poster = { mesh, stamp, drop, shade, phase: 'open', t0: performance.now(), from: page.localToWorld(c), h0: (y1 - y0) * M[i].imgS.y };
+  help(['点任意处，把启事贴回去', 'Click anywhere to put the poster back'], 4000);
+  interacted();
+}
+function closePoster() { if (poster?.phase === 'open') { poster.phase = 'close'; poster.t1 = performance.now(); } }
+function updateEggs(now) {
+  for (let k = meows.length - 1; k >= 0; k--) {
+    const w = meows[k], t = (now - w.t0) / 1100;
+    if (t >= 1) { w.m.parent.remove(w.m); w.m.geometry.dispose(); w.m.material.map.dispose(); w.m.material.dispose(); meows.splice(k, 1); continue; }
+    const sc = (t < 0.25 ? easeBack(t / 0.25) : 1) * 1.25;
+    w.m.scale.set(sc, sc, 1); w.m.position.y = w.y0 + t * 3; w.m.material.opacity = t > 0.65 ? 1 - (t - 0.65) / 0.35 : 1;
+  }
+  if (!poster) return;
+  const p = poster, OPEN = 900, CLOSE = 650, STAMP_AT = 1050, STAMP_LEN = 190;
+  const k = p.phase === 'open' ? Math.min(1, (now - p.t0) / OPEN) : 1 - Math.min(1, (now - p.t1) / CLOSE);
+  const e = easeOut(k);
+  // 终点：相机和页面中间，占画面高度的 86%（扣掉底部工具栏）
+  const tn = Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)), d = cam.position.z * 0.5;
+  const H = Math.min(2 * d * tn * ((innerHeight - BAR) / innerHeight) * 0.86, (2 * d * tn * cam.aspect * 0.9) / 0.75);
+  const to = new THREE.Vector3(look.x, look.y, cam.position.z - d);
+  const h = THREE.MathUtils.lerp(p.h0, H, e);
+  p.mesh.position.copy(p.from).lerp(to, e);
+  p.mesh.position.y += Math.sin(Math.PI * k) * H * 0.1;          // 飞的时候往上拱一点
+  p.mesh.scale.set(h, h, 1);
+  p.mesh.rotation.set(0, (1 - e) * Math.PI * 2, THREE.MathUtils.lerp(-0.06, 0.025, e));   // 转一圈飞过来
+  p.shade.position.set(look.x, look.y, cam.position.z - d - 2);
+  p.shade.material.opacity = e * 0.62;
+  p.drop.material.opacity = Math.pow(e, 4) * 0.35;
+  if (p.phase === 'open') {   // 印章砸下来，纸抖一下
+    const st = (now - p.t0 - STAMP_AT) / STAMP_LEN;
+    if (st > 0) {
+      const ss = Math.min(1, st), sc = 2.6 - 1.6 * ss * ss;
+      p.stamp.scale.set(sc, sc, 1); p.stamp.material.opacity = Math.min(1, ss * 1.6);
+      const land = (now - p.t0 - STAMP_AT - STAMP_LEN) / 220;
+      if (land > 0 && land < 1) { p.mesh.position.x += Math.sin(land * 30) * H * 0.008 * (1 - land); p.mesh.position.y -= Math.sin(land * Math.PI) * H * 0.006; }
+    }
+  } else {
+    p.stamp.material.opacity = Math.max(0, p.stamp.material.opacity - 0.12);
+    if (k <= 0) {
+      for (const o of [p.mesh, p.shade]) { scene.remove(o); o.traverse((x) => { x.geometry?.dispose(); x.material?.map?.dispose(); x.material?.dispose(); }); }
+      poster = null;
+    }
+  }
+}
+
+const keys = new Set();
+addEventListener('keydown', (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key;
+  if (k === 'Escape') (poster ? closePoster() : setFocus(-1));
+  else if (k === 'ArrowLeft' || k === 'ArrowRight') { const i = focus >= 0 ? focus : hover; if (i >= 0) { keys.add(k); S[i].spin = false; S[i].reset = false; syncButtons(); interacted(); } e.preventDefault(); }
+  else if (k === 'ArrowDown' || k === 'PageDown') { setFocus(focus < 0 ? 0 : (focus + 1) % P.length); e.preventDefault(); }
+  else if (k === 'ArrowUp' || k === 'PageUp') { setFocus(focus < 0 ? P.length - 1 : (focus - 1 + P.length) % P.length); e.preventDefault(); }
+  else if (/^[1-9]$/.test(k) && +k <= P.length) setFocus(+k - 1);
+  else if (k === ' ') { toggleSpin(); e.preventDefault(); }
+  else if (k === 'r' || k === 'R') resetAll();
+  else if (k === 'h' || k === 'H') toggleInk();
+});
+addEventListener('keyup', (e) => keys.delete(e.key));
+
+function targets() { return focus >= 0 ? [focus] : P.map((_, i) => i); }
+function syncButtons() {
+  $('spin').setAttribute('aria-pressed', targets().every((i) => S[i].spin));
+  $('spin').innerHTML = focus >= 0 ? '自动旋转<span class="en" lang="en">Auto-spin</span>' : '全部转动<span class="en" lang="en">Spin all</span>';
+  $('ink').setAttribute('aria-pressed', inkOn);
+}
+function toggleSpin() { const t = targets(), on = !t.every((i) => S[i].spin); t.forEach((i) => { S[i].spin = on; S[i].reset = false; }); interacted(); syncButtons(); }
+function resetAll() { targets().forEach((i) => { S[i].spin = false; S[i].vel = 0; S[i].reset = true; }); syncButtons(); }
+function toggleInk() { inkOn = !inkOn; M.forEach((m) => { m.mat.uniforms.ink.value = inkOn ? 1 : 0; }); syncButtons(); }
+$('spin').onclick = toggleSpin;
+$('reset').onclick = resetAll;
+$('ink').onclick = toggleInk;
+$('back').onclick = () => setFocus(-1);
+$('prev').onclick = () => setFocus((focus - 1 + P.length) % P.length);
+$('next').onclick = () => setFocus((focus + 1) % P.length);
+
+// ---------- 主循环 ----------
+let prevT = performance.now(), introAt = 0;
+const WIG = 1.5;
+function tick(now) {
+  const dt = Math.min(0.05, (now - prevT) / 1000); prevT = now;
+  const k = 1 - Math.exp(-dt * 6);
+  cam.position.lerp(tPos, k); look.lerp(tLook, k); cam.lookAt(look);
+  tilt.lerp(tiltT, 1 - Math.exp(-dt * (drag?.kind === 'page' ? 14 : 4)));
+  page.rotation.set(tilt.x, tilt.y, 0);
+  // 开场：前几层帧到了以后，六格依次左右晃一下，提示能转
+  if (!introAt && !reduced && !START && S.every((s) => s.loaded >= 8)) { introAt = now / 1000 + 0.4; S.forEach((s, i) => { s.wig = introAt + i * 0.16; }); }
+  S.forEach((s, i) => {
+    const p = P[i], m = M[i], dragging = drag?.kind === 'panel' && drag.i === i && drag.moved;
+    if (keys.size && (focus >= 0 ? focus : hover) === i) s.angle += (keys.has('ArrowRight') ? 1 : -1) * 120 * dt;
+    else if (!dragging) {
+      if (s.spin) s.angle += SPIN_DEG_S * dt;
+      else if (s.reset) { const tgt = Math.round(s.angle / 360) * 360; s.angle += (tgt - s.angle) * k; if (Math.abs(tgt - s.angle) < 0.3) { s.angle = 0; s.reset = false; } }
+      else { s.angle += s.vel * dt; s.vel *= Math.exp(-dt * 2.8); if (Math.abs(s.vel) < 2) s.vel = 0; }
+    }
+    let w = 0;
+    if (s.wig > 0) { const tt = now / 1000 - s.wig; if (tt > WIG) s.wig = -1; else if (tt > 0) w = 16 * Math.sin((tt / WIG) * Math.PI * 2) * Math.sin((tt / WIG) * Math.PI); }
+    const disp = s.angle + w, n = p.n, f = ((Math.round((disp / 360) * n) % n) + n) % n;
+    if (VIDEO) {
+      if (s.busy && !s.v.seeking && performance.now() - s.t0 > 1500) s.busy = false;   // seeked 事件丢了就放行；还在跳转中就等，别打断
+      seekTo(s, f); if (s.cur >= 0) m.mat.uniforms.hasMap.value = 1;
+    }
+    else {
+      const img = nearest(i, f);
+      if (img && img !== s.shown) { s.shown = img; s.tex.image = img; s.tex.needsUpdate = true; m.mat.uniforms.hasMap.value = 1; }
+    }
+    const dev = Math.abs(((disp % 360) + 540) % 360 - 180);   // 离 0° 多远（0–180）
+    const lifted = focus < 0 && (hover === i || dragging) ? 1 : 0;
+    s.lift += (lifted - s.lift) * k;
+    s.dialA += ((hover === i || dragging || s.spin ? 1 : dev > 3 ? 0.7 : 0) - s.dialA) * k;
+    s.dim += ((focus >= 0 && focus !== i ? 0.62 : 0) - s.dim) * k;
+    m.group.position.z = 0.05 + s.lift * 1.6;
+    m.sh.material.opacity = s.lift * 0.85;
+    const un = m.mat.uniforms;
+    un.ang.value = (f / n) * Math.PI * 2; un.dialA.value = s.dialA; un.dim.value = s.dim;
+    const ta = 1 - THREE.MathUtils.smoothstep(dev, 5, 24);
+    m.talks.forEach((t) => { t.material.opacity = ta; t.visible = ta > 0.01; });
+  });
+  updateEggs(now);
+  renderer.render(scene, cam);
+  perf(now, dt);
+  requestAnimationFrame(tick);
+}
+let fps = 60, perfAt = 0;
+function perf(now, dt) {
+  if (dt > 0) fps += (1 / dt - fps) * 0.05;
+  if (now - perfAt < 500) return;
+  perfAt = now;
+  if (!VIDEO && loadedAll < TOTAL) return;   // 图片帧还在载入时显示载入进度
+  if (DATA.publish && !VIDEO) return;         // 对外版：载完就不显示帧率了
+  let txt = `${Math.round(fps)} fps`;
+  if (VIDEO) {
+    const tot = S.reduce((a, s) => a + s.total, 0), got = S.reduce((a, s) => a + s.bytes, 0);
+    const buf = S.every((s) => s.ready) ? 1 : tot ? got / tot : 0;
+    if (buf < 1) txt = `下载视频 ${Math.round(buf * 100)}%<span class="en" lang="en">Loading videos</span>`;
+    else if (seekStats.length) txt += ` · 跳帧 ${Math.round(seekStats.reduce((a, b) => a + b, 0) / seekStats.length)}ms<span class="en" lang="en">avg seek time</span>`;
+  }
+  $('stat').innerHTML = txt;
+}
+$('tag').textContent = VIDEO ? 'VideoTexture' : 'JPG 帧';
+if (DATA.publish) { $('tag').style.display = 'none'; $('other').style.display = 'none'; }   // 对外版：不显示版本标签和对比链接
+$('other').href = DATA.other;
+$('other').innerHTML = VIDEO ? '对比：图片帧版 ↗<span class="en" lang="en">Compare: JPG frames</span>' : '对比：视频版 ↗<span class="en" lang="en">Compare: VideoTexture</span>';
+
+resize();
+build();
+addEventListener('resize', resize);
+syncButtons();
+help(HELP.page, 8000);
+requestAnimationFrame(tick);
+// 调试 / 录 demo 用：toScreen(格, fx, fy) 和 pageToScreen(fx, fy) 把格子或整页里的相对位置（0–1，左上为原点）换成屏幕坐标
+const toScreenPt = (x, y) => {
+  scene.updateMatrixWorld(); cam.updateMatrixWorld();
+  const v = page.localToWorld(new THREE.Vector3(x, y, 0.05)).project(cam);
+  return [Math.round((v.x + 1) / 2 * innerWidth), Math.round((1 - v.y) / 2 * innerHeight)];
+};
+window.__comic = { S, M, setFocus, tiltT, get focus() { return focus; },
+  pick: (x, y) => { scene.updateMatrixWorld(); cam.updateMatrixWorld(); return pick({ clientX: x, clientY: y }); },
+  toScreen: (i, fx, fy) => { const b = M[i].bb; return toScreenPt(b.x0 + fx * b.w, b.y1 - fy * b.h); },
+  pageToScreen: (fx, fy) => toScreenPt((fx - 0.5) * L.W, (0.5 - fy) * L.H),
+  imgToScreen: (i, u, v) => { const p = imgLocal(i, u, v); return toScreenPt(p.x, p.y); },
+  get posterOpen() { return !!poster; } };
+</script>
+</body>
+</html>

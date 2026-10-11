@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Explorations · AI 探索笔记</title>
+<meta name="description" content="一些 AI 模型的实测和可以直接上手玩的 demo。Hands-on tests and interactive demos of AI models.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AI Explorations · AI 探索笔记">
+<meta property="og:description" content="一些 AI 模型的实测和可以直接上手玩的 demo。Hands-on tests and interactive demos of AI models.">
+<meta property="og:url" content="https://eternityspring.github.io/ai-explorations/">
+<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/2026-10-lost-cat-comic/cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root { --bg:#f6f3ee; --card:#fffdf9; --ink:#1d1b18; --muted:#78716a; --line:#e4ddd2; --chip:#efe9df; --accent:#d6402a; --accent-ink:#fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#141312; --card:#1d1c1a; --ink:#efebe4; --muted:#a29a8f; --line:#2f2c29; --chip:#2a2724; --accent:#ff6a4d; --accent-ink:#1a0d0a; } }
+:root[data-theme="dark"] { --bg:#141312; --card:#1d1c1a; --ink:#efebe4; --muted:#a29a8f; --line:#2f2c29; --chip:#2a2724; --accent:#ff6a4d; --accent-ink:#1a0d0a; }
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.65 "PingFang SC","Hiragino Sans GB","Noto Sans SC",-apple-system,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased; }
+[lang="en"] { font-family:"Avenir Next","Helvetica Neue",-apple-system,"Segoe UI",Arial,sans-serif; }
+main { max-width:1180px; margin:0 auto; padding:56px 16px 72px; }
+header { margin-bottom:28px; }
+h1 { margin:0; font:700 clamp(34px, 6vw, 56px)/1.05 "Iowan Old Style","Palatino","Georgia","Songti SC",serif; letter-spacing:-.01em; }
+h1 span { display:block; margin-top:8px; font:500 clamp(18px, 2.6vw, 24px)/1.3 "Songti SC","Noto Serif SC",serif; color:var(--muted); letter-spacing:.06em; }
+.intro { max-width:640px; margin:18px 0 0; color:var(--muted); }
+.intro span { display:block; font-size:14px; }
+.filters { display:flex; flex-wrap:wrap; gap:8px; margin:28px 0 22px; }
+.filters button { font:inherit; font-size:13px; line-height:1.3; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:6px 14px; border-radius:999px; cursor:pointer; }
+.filters button small { margin-left:6px; color:var(--muted); font-size:11px; }
+.filters button[aria-pressed="true"] { background:var(--ink); color:var(--bg); border-color:var(--ink); }
+.filters button[aria-pressed="true"] small { color:inherit; opacity:.7; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap:22px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; }
+.card[hidden] { display:none; }
+.cover { position:relative; display:block; aspect-ratio:16/9; background:var(--chip); overflow:hidden; }
+.cover img, .cover video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .5s, opacity .3s; }
+.cover video { opacity:0; }
+.cover.playing video { opacity:1; }
+.cover:hover img { transform:scale(1.03); }
+.play { position:absolute; right:12px; bottom:12px; background:rgba(0,0,0,.62); color:#fff; font-size:13px; line-height:1.25; padding:6px 12px; border-radius:10px; backdrop-filter:blur(6px); text-align:center; }
+.play small { display:block; font-size:10px; opacity:.75; }
+.body { padding:18px 20px 20px; display:flex; flex-direction:column; flex:1; }
+.meta { margin:0 0 10px; display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; font-size:12px; color:var(--muted); }
+.meta time { font-variant-numeric:tabular-nums; margin-right:4px; }
+.tag { background:var(--chip); color:var(--ink); border-radius:6px; padding:2px 8px; }
+.tag small { margin-left:5px; color:var(--muted); font-size:10.5px; }
+h2 { margin:0 0 10px; font-size:20px; line-height:1.35; }
+h2 span { display:block; font-size:14px; font-weight:500; color:var(--muted); margin-top:2px; }
+.sum { margin:0 0 8px; }
+.sum.en { color:var(--muted); font-size:13.5px; }
+.models { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 10px; }
+.models code { font:12px/1.4 ui-monospace,"SF Mono",Menlo,monospace; background:var(--chip); border-radius:6px; padding:3px 7px; }
+details { margin:4px 0 12px; border-top:1px solid var(--line); padding-top:10px; }
+summary { cursor:pointer; font-weight:600; font-size:14px; }
+summary span { font-weight:500; color:var(--muted); margin-left:4px; }
+details ul { margin:8px 0 0; padding-left:18px; }
+details li { margin:0 0 8px; font-size:14px; }
+details li span { display:block; color:var(--muted); font-size:12.5px; }
+.links { margin:auto 0 0; padding-top:8px; display:flex; flex-wrap:wrap; gap:8px; }
+.btn { font-size:13.5px; text-decoration:none; color:var(--ink); border:1px solid var(--line); border-radius:10px; padding:7px 14px; }
+.btn span { color:var(--muted); font-size:12px; margin-left:2px; }
+.btn.primary { background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+.btn.primary span { color:inherit; opacity:.8; }
+.btn.ghost { border-color:transparent; }
+.btn:hover { border-color:var(--muted); }
+.btn:focus-visible, .filters button:focus-visible, .cover:focus-visible, summary:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+footer { margin-top:48px; color:var(--muted); font-size:13px; }
+footer a { color:inherit; }
+@media (prefers-reduced-motion: reduce) { .cover img, .cover video { transition:none; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>AI Explorations<span>AI 探索笔记</span></h1>
+    <p class="intro">一些 AI 模型的实测，和可以直接上手玩的 demo。每一个都是静态网页，点开就能玩。
+      <span lang="en">Hands-on tests of AI models, with interactive demos you can play with right in the browser.</span></p>
+  </header>
+  <nav class="filters" aria-label="按标签筛选 Filter by tag">
+    <button aria-pressed="true" data-tag="">全部<small>All</small></button>
+    <button aria-pressed="false" data-tag="图像生成">图像生成<small>Image generation</small></button>
+    <button aria-pressed="false" data-tag="环绕视频">环绕视频<small>Orbit video</small></button>
+    <button aria-pressed="false" data-tag="交互">交互<small>Interactive</small></button>
+  </nav>
+  <section class="grid">
+  <article class="card" data-tags="图像生成|环绕视频|交互">
+    <a class="cover" href="2026-10-lost-cat-comic/index.html" aria-label="打开 demo：寻猫：一页可以转的漫画">
+      <img src="2026-10-lost-cat-comic/cover.jpg" alt="" loading="lazy">
+      <video muted loop playsinline preload="none" data-src="2026-10-lost-cat-comic/demo.mp4"></video>
+      <span class="play">打开 demo<small>Open demo</small></span>
+    </a>
+    <div class="body">
+      <p class="meta"><time datetime="2026-10-11">2026-10-11</time><span class="tag">图像生成<small>Image generation</small></span><span class="tag">环绕视频<small>Orbit video</small></span><span class="tag">交互<small>Interactive</small></span></p>
+      <h2>寻猫：一页可以转的漫画<span lang="en">Lost Cat — a comic page you can spin</span></h2>
+      <p class="sum">Qwen Image 2.1 画六格剧情漫画，每格用 MiniMax-H3 + ORB360 LoRA 生成 360° 环绕视频，再用 three.js 拼成一页：拖动任意一格就能绕着角色转，点一格推近看，第二格的寻猫启事还藏了彩蛋。</p>
+      <p class="sum en" lang="en">Six comic panels drawn with Qwen Image 2.1, each turned into a 360° orbit video with MiniMax-H3 + the ORB360 LoRA, then assembled into one three.js page: drag any panel to circle the characters, click to zoom in — and try the Lost Cat poster in panel 2.</p>
+      <p class="models"><code>Qwen Image 2.1</code><code>MiniMax-H3 Ref2VA</code><code>ORB360 LoRA (step 1500)</code><code>three.js</code></p>
+      <details><summary>要点 <span lang="en">Notes</span></summary><ul><li>每一格的环绕都成立：转一圈回到原图，背面补得合理，角色前后一致，双人格也能一起转。<span lang="en">Every orbit closes the loop: plausible back views, consistent characters, even two people turning together.</span></li><li>官方提示词会把室内背景补成户外（草地、雪）；给每格写清 360° 环境后，卧室和菜市场都修好了。<span lang="en">The stock prompt turns indoor scenes into outdoor ones (grass, snow); describing each panel’s surroundings fixed the bedroom and the market.</span></li><li>提示词改不了图里已有的遮挡：主角背后贴着墙或广告牌，转到背面就看不到人，出图时要给背后留空。<span lang="en">Prompts can’t remove occluders already in the image — leave space behind the subject when drawing the panel.</span></li></ul></details>
+      <p class="links"><a class="btn primary" href="2026-10-lost-cat-comic/index.html">打开 demo <span lang="en">Open</span> ↗</a><a class="btn" href="2026-10-lost-cat-comic/demo.mp4">演示视频 <span lang="en">Video</span></a><a class="btn ghost" href="https://github.com/eternityspring/ai-explorations/tree/main/2026-10-lost-cat-comic">源文件 <span lang="en">Files</span></a></p>
+    </div>
+  </article>
+  </section>
+  <footer>共 1 个 · 1 demo · <a href="https://github.com/eternityspring/ai-explorations">GitHub</a></footer>
+</main>
+<script>
+const buttons = document.querySelectorAll('.filters button'), cards = document.querySelectorAll('.card');
+buttons.forEach((b) => b.addEventListener('click', () => {
+  buttons.forEach((x) => x.setAttribute('aria-pressed', x === b));
+  cards.forEach((c) => { c.hidden = !!b.dataset.tag && !c.dataset.tags.split('|').includes(b.dataset.tag); });
+}));
+// 鼠标移到封面上就播放演示视频（第一次才加载），移开暂停；触屏设备只显示封面
+if (matchMedia('(hover: hover)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.querySelectorAll('.cover').forEach((a) => {
+    const v = a.querySelector('video'); if (!v) return;
+    a.addEventListener('mouseenter', () => { if (!v.src) v.src = v.dataset.src; v.play().then(() => a.classList.add('playing')).catch(() => {}); });
+    a.addEventListener('mouseleave', () => { v.pause(); a.classList.remove('playing'); });
+  });
+}
+</script>
+</body>
+</html>

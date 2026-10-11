@@ -1,0 +1,41 @@
+{
+  "slug": "2026-10-lost-cat-comic",
+  "title": "寻猫：一页可以转的漫画",
+  "titleEn": "Lost Cat — a comic page you can spin",
+  "date": "2026-10-11",
+  "tags": [
+    "图像生成",
+    "环绕视频",
+    "交互"
+  ],
+  "tagsEn": [
+    "Image generation",
+    "Orbit video",
+    "Interactive"
+  ],
+  "models": [
+    "Qwen Image 2.1",
+    "MiniMax-H3 Ref2VA",
+    "ORB360 LoRA (step 1500)",
+    "three.js"
+  ],
+  "summary": "Qwen Image 2.1 画六格剧情漫画，每格用 MiniMax-H3 + ORB360 LoRA 生成 360° 环绕视频，再用 three.js 拼成一页：拖动任意一格就能绕着角色转，点一格推近看，第二格的寻猫启事还藏了彩蛋。",
+  "summaryEn": "Six comic panels drawn with Qwen Image 2.1, each turned into a 360° orbit video with MiniMax-H3 + the ORB360 LoRA, then assembled into one three.js page: drag any panel to circle the characters, click to zoom in — and try the Lost Cat poster in panel 2.",
+  "notes": [
+    [
+      "每一格的环绕都成立：转一圈回到原图，背面补得合理，角色前后一致，双人格也能一起转。",
+      "Every orbit closes the loop: plausible back views, consistent characters, even two people turning together."
+    ],
+    [
+      "官方提示词会把室内背景补成户外（草地、雪）；给每格写清 360° 环境后，卧室和菜市场都修好了。",
+      "The stock prompt turns indoor scenes into outdoor ones (grass, snow); describing each panel’s surroundings fixed the bedroom and the market."
+    ],
+    [
+      "提示词改不了图里已有的遮挡：主角背后贴着墙或广告牌，转到背面就看不到人，出图时要给背后留空。",
+      "Prompts can’t remove occluders already in the image — leave space behind the subject when drawing the panel."
+    ]
+  ],
+  "demo": "index.html",
+  "video": "demo.mp4",
+  "cover": "cover.jpg"
+}
