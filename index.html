@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Explorations</title>
 <script>
-// 渲染前就定好语言，免得先闪一下另一种：选过的优先，否则看浏览器语言
+// 渲染前就定好语言，免得先闪一下另一种：网址参数 ?lang= > 切换过的选择 > 浏览器语言
 (() => {
-  let lang = null;
-  try { lang = localStorage.getItem('aie-lang'); } catch {}
-  if (lang !== 'zh' && lang !== 'en') lang = (navigator.languages?.[0] || navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en';
+  const norm = (v) => { v = String(v || '').toLowerCase(); return v.startsWith('zh') || v === 'cn' ? 'zh' : v.startsWith('en') ? 'en' : null; };
+  let lang = norm(new URLSearchParams(location.search).get('lang'));
+  if (!lang) try { lang = norm(localStorage.getItem('aie-lang')); } catch {}
+  if (!lang) lang = norm(navigator.languages?.[0] || navigator.language) || 'en';
   const h = document.documentElement; h.dataset.lang = lang; h.lang = lang === 'zh' ? 'zh-CN' : 'en';
   if (lang === 'zh') document.title = 'AI 探索笔记';
 })();
@@ -99,7 +100,7 @@ footer a { color:inherit; }
   </nav>
   <section class="grid">
   <article class="card" data-tags="图像生成|环绕视频|交互">
-    <a class="cover" href="lost-cat-comic/index.html" aria-label="Lost Cat — a comic page you can spin">
+    <a class="cover" href="lost-cat-comic/index.html" data-demo aria-label="Lost Cat — a comic page you can spin">
       <img src="lost-cat-comic/cover.jpg" alt="" loading="lazy">
       <video muted loop playsinline preload="none" data-src="lost-cat-comic/demo.mp4"></video>
       <span class="play"><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span></span>
@@ -110,20 +111,24 @@ footer a { color:inherit; }
       <p class="zh sum">Qwen Image 2.1 画六格剧情漫画，每格用 MiniMax-H3 + ORB360 LoRA 生成 360° 环绕视频，再用 three.js 拼成一页：拖动任意一格就能绕着角色转，点一格推近看，第二格的寻猫启事还藏了彩蛋。</p><p class="en sum" lang="en">Six comic panels drawn with Qwen Image 2.1, each turned into a 360° orbit video with MiniMax-H3 + the ORB360 LoRA, then assembled into one three.js page: drag any panel to circle the characters, click to zoom in — and try the Lost Cat poster in panel 2.</p>
       <p class="models"><code>Qwen Image 2.1</code><code>MiniMax-H3 Ref2VA</code><code>ORB360 LoRA (step 1500)</code><code>three.js</code></p>
       <details><summary><span class="zh ">要点</span><span class="en " lang="en">Notes</span></summary><ul><li><span class="zh ">每一格的环绕都成立：转一圈回到原图，背面补得合理，角色前后一致，双人格也能一起转。</span><span class="en " lang="en">Every orbit closes the loop: plausible back views, consistent characters, even two people turning together.</span></li><li><span class="zh ">官方提示词会把室内背景补成户外（草地、雪）；给每格写清 360° 环境后，卧室和菜市场都修好了。</span><span class="en " lang="en">The stock prompt turns indoor scenes into outdoor ones (grass, snow); describing each panel’s surroundings fixed the bedroom and the market.</span></li><li><span class="zh ">提示词改不了图里已有的遮挡：主角背后贴着墙或广告牌，转到背面就看不到人，出图时要给背后留空。</span><span class="en " lang="en">Prompts can’t remove occluders already in the image — leave space behind the subject when drawing the panel.</span></li></ul></details>
-      <p class="links"><a class="btn primary" href="lost-cat-comic/index.html"><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span> ↗</a><a class="btn" href="lost-cat-comic/demo.mp4"><span class="zh ">演示视频</span><span class="en " lang="en">Video</span></a></p>
+      <p class="links"><a class="btn primary" href="lost-cat-comic/index.html" data-demo><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span> ↗</a><a class="btn" href="lost-cat-comic/demo.mp4"><span class="zh ">演示视频</span><span class="en " lang="en">Video</span></a></p>
     </div>
   </article>
   </section>
   <footer><span class="zh ">共 1 个 demo</span><span class="en " lang="en">1 demo</span> · <a href="https://github.com/eternityspring/ai-explorations">GitHub</a></footer>
 </main>
 <script>
-// 语言切换：记住选择（demo 页右上角的导航也读这个）
+// 语言切换：记住选择、地址栏改成 ?lang=…；点进 demo 的链接带上当前语言
 const langButtons = document.querySelectorAll('[data-set-lang]');
 function setLang(lang, save) {
   const h = document.documentElement; h.dataset.lang = lang; h.lang = lang === 'zh' ? 'zh-CN' : 'en';
   document.title = lang === 'zh' ? 'AI 探索笔记' : 'AI Explorations';
   langButtons.forEach((b) => b.setAttribute('aria-pressed', b.dataset.setLang === lang));
-  if (save) try { localStorage.setItem('aie-lang', lang); } catch {}
+  document.querySelectorAll('a[data-demo]').forEach((a) => { const u = new URL(a.href); u.searchParams.set('lang', lang); a.href = u.href; });
+  if (save) {
+    try { localStorage.setItem('aie-lang', lang); } catch {}
+    const u = new URL(location.href); u.searchParams.set('lang', lang); history.replaceState(null, '', u);
+  }
 }
 langButtons.forEach((b) => b.addEventListener('click', () => setLang(b.dataset.setLang, true)));
 setLang(document.documentElement.dataset.lang, false);

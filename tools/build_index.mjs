@@ -1,6 +1,6 @@
 // 扫描每个评测文件夹的 meta.json，生成首页 index.html（卡片墙，按日期倒序，可按标签筛选），并更新两份 README 里的列表。
-// 首页一次只显示一种语言：右上角「中文 / EN」切换，默认跟浏览器语言（zh 开头用中文，其余英文），选过就记在 localStorage（aie-lang），
-// demo 页右上角的 assets/nav.js 也读同一个设置。
+// 首页一次只显示一种语言，优先级：网址参数 ?lang=zh / ?lang=en > 右上角「中文 / EN」切换过（记在 localStorage 的 aie-lang）> 浏览器语言（zh 开头用中文，其余英文）。
+// 切换时地址栏同步改成 ?lang=…，方便带着语言分享；点进 demo 的链接也带上 ?lang=，demo 页右上角的 assets/nav.js 用同样的规则。
 // 用法：node tools/build_index.mjs（publish.mjs 会自动调用）
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -28,7 +28,7 @@ const card = (e) => {
   const demo = href(e.demo ?? 'index.html');
   return `
   <article class="card" data-tags="${(e.tags ?? []).map(esc).join('|')}">
-    <a class="cover" href="${demo}" aria-label="${esc(e.titleEn || e.title)}">
+    <a class="cover" href="${demo}" data-demo aria-label="${esc(e.titleEn || e.title)}">
       ${e.cover ? `<img src="${href(e.cover)}" alt="" loading="lazy">` : ''}
       ${e.video ? `<video muted loop playsinline preload="none" data-src="${href(e.video)}"></video>` : ''}
       <span class="play">${t('打开 demo', 'Open demo')}</span>
@@ -39,7 +39,7 @@ const card = (e) => {
       ${t(e.summary, e.summaryEn, 'p', 'sum')}
       ${e.models?.length ? `<p class="models">${e.models.map((x) => `<code>${esc(x)}</code>`).join('')}</p>` : ''}
       ${e.notes?.length ? `<details><summary>${t('要点', 'Notes')}</summary><ul>${e.notes.map(([zh, en]) => `<li>${t(zh, en)}</li>`).join('')}</ul></details>` : ''}
-      <p class="links"><a class="btn primary" href="${demo}">${t('打开 demo', 'Open demo')} ↗</a>${e.video ? `<a class="btn" href="${href(e.video)}">${t('演示视频', 'Video')}</a>` : ''}</p>
+      <p class="links"><a class="btn primary" href="${demo}" data-demo>${t('打开 demo', 'Open demo')} ↗</a>${e.video ? `<a class="btn" href="${href(e.video)}">${t('演示视频', 'Video')}</a>` : ''}</p>
     </div>
   </article>`;
 };
@@ -51,11 +51,12 @@ const html = `<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Explorations</title>
 <script>
-// 渲染前就定好语言，免得先闪一下另一种：选过的优先，否则看浏览器语言
+// 渲染前就定好语言，免得先闪一下另一种：网址参数 ?lang= > 切换过的选择 > 浏览器语言
 (() => {
-  let lang = null;
-  try { lang = localStorage.getItem('aie-lang'); } catch {}
-  if (lang !== 'zh' && lang !== 'en') lang = (navigator.languages?.[0] || navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en';
+  const norm = (v) => { v = String(v || '').toLowerCase(); return v.startsWith('zh') || v === 'cn' ? 'zh' : v.startsWith('en') ? 'en' : null; };
+  let lang = norm(new URLSearchParams(location.search).get('lang'));
+  if (!lang) try { lang = norm(localStorage.getItem('aie-lang')); } catch {}
+  if (!lang) lang = norm(navigator.languages?.[0] || navigator.language) || 'en';
   const h = document.documentElement; h.dataset.lang = lang; h.lang = lang === 'zh' ? 'zh-CN' : 'en';
   if (lang === 'zh') document.title = 'AI 探索笔记';
 })();
@@ -145,13 +146,17 @@ footer a { color:inherit; }
   <footer>${t(`共 ${evals.length} 个 demo`, `${evals.length} demo${evals.length === 1 ? '' : 's'}`)} · <a href="${GITHUB}">GitHub</a></footer>
 </main>
 <script>
-// 语言切换：记住选择（demo 页右上角的导航也读这个）
+// 语言切换：记住选择、地址栏改成 ?lang=…；点进 demo 的链接带上当前语言
 const langButtons = document.querySelectorAll('[data-set-lang]');
 function setLang(lang, save) {
   const h = document.documentElement; h.dataset.lang = lang; h.lang = lang === 'zh' ? 'zh-CN' : 'en';
   document.title = lang === 'zh' ? 'AI 探索笔记' : 'AI Explorations';
   langButtons.forEach((b) => b.setAttribute('aria-pressed', b.dataset.setLang === lang));
-  if (save) try { localStorage.setItem('aie-lang', lang); } catch {}
+  document.querySelectorAll('a[data-demo]').forEach((a) => { const u = new URL(a.href); u.searchParams.set('lang', lang); a.href = u.href; });
+  if (save) {
+    try { localStorage.setItem('aie-lang', lang); } catch {}
+    const u = new URL(location.href); u.searchParams.set('lang', lang); history.replaceState(null, '', u);
+  }
 }
 langButtons.forEach((b) => b.addEventListener('click', () => setLang(b.dataset.setLang, true)));
 setLang(document.documentElement.dataset.lang, false);

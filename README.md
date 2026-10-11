@@ -4,7 +4,7 @@
 
 Hands-on tests of AI models, with interactive demos you can play with right in the browser. Every demo is a static web page.
 
-**Browse: <https://eternityspring.github.io/ai-explorations/>**
+**Browse: <https://eternityspring.github.io/ai-explorations/>** (English: [`?lang=en`](https://eternityspring.github.io/ai-explorations/?lang=en) · Chinese: [`?lang=zh`](https://eternityspring.github.io/ai-explorations/?lang=zh); without the parameter the gallery follows your browser language)
 
 ## Demos
 

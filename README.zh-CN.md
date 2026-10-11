@@ -4,7 +4,7 @@
 
 一些 AI 模型的实测，和可以直接上手玩的 demo。每个 demo 都是静态网页，在浏览器里点开就能玩。
 
-**在线浏览：<https://eternityspring.github.io/ai-explorations/>**
+**在线浏览：<https://eternityspring.github.io/ai-explorations/>**（中文：[`?lang=zh`](https://eternityspring.github.io/ai-explorations/?lang=zh) · 英文：[`?lang=en`](https://eternityspring.github.io/ai-explorations/?lang=en)；不带参数时跟随浏览器语言）
 
 ## Demo 列表
 

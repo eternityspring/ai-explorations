@@ -1,16 +1,18 @@
 // 每个 demo 页面角落里的小导航：回到「AI 探索笔记」首页，旁边一个 GitHub 图标（链到仓库首页）。
 // 由 tools/publish.mjs 发布时自动注入：<script src="../assets/nav.js" async data-pos="top-right"></script>
 // data-pos：top-right（默认）/ top-left / bottom-right / bottom-left。用 Shadow DOM，样式和 demo 页面互不影响。
-// 语言跟首页一致：首页选过就用 localStorage 里的 aie-lang，否则看浏览器语言（zh 开头用中文，其余英文）。
+// 语言跟首页同一套规则：网址参数 ?lang=zh / ?lang=en > 首页切换过的选择（localStorage 的 aie-lang）> 浏览器语言；回首页的链接带上 ?lang=。
 (() => {
   const REPO = 'https://github.com/eternityspring/ai-explorations';
   const me = document.currentScript;
   if (!me || document.querySelector('[data-ai-explorations-nav]')) return;
   const [v, h] = (me.dataset.pos || 'top-right').split('-');
   const home = new URL('../', me.src);   // assets/ 的上一级就是首页
-  let lang = null;
-  try { lang = localStorage.getItem('aie-lang'); } catch {}
-  if (lang !== 'zh' && lang !== 'en') lang = (navigator.languages?.[0] || navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en';
+  const norm = (x) => { x = String(x || '').toLowerCase(); return x.startsWith('zh') || x === 'cn' ? 'zh' : x.startsWith('en') ? 'en' : null; };
+  let lang = norm(new URLSearchParams(location.search).get('lang'));
+  if (!lang) try { lang = norm(localStorage.getItem('aie-lang')); } catch {}
+  if (!lang) lang = norm(navigator.languages?.[0] || navigator.language) || 'en';
+  home.searchParams.set('lang', lang);
   const T = lang === 'zh'
     ? { home: 'AI 探索笔记', homeTip: '回到 AI 探索笔记首页', gh: '在 GitHub 上查看仓库' }
     : { home: 'AI Explorations', homeTip: 'Back to all demos', gh: 'View the repository on GitHub' };
