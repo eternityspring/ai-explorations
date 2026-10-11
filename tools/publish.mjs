@@ -10,7 +10,7 @@
 //             "demo": "index.html", "video": "demo.mp4", "cover": "cover.jpg",
 //             "nav": "top-right" }        // 角落导航的位置：top-right（默认）/ top-left / bottom-right / bottom-left，false = 不加
 // }
-// 发布时会给 demo 里每个 .html 注入 assets/nav.js：页面角落一个小导航，能回到首页、打开这个 demo 在 GitHub 上的文件夹。
+// 发布时会给 demo 里每个 .html 注入 assets/nav.js：页面角落一个小导航，能回到首页，旁边一个 GitHub 图标（链到仓库首页）。
 import { execFileSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -35,7 +35,7 @@ for (const [to, from] of Object.entries(m.files)) {
 }
 writeFileSync(join(dest, 'meta.json'), JSON.stringify({ slug: m.slug, ...m.meta }, null, 2) + '\n');
 
-// 注入角落导航（回首页 / 看源码）：路径按页面所在层级算，已经有的不重复加
+// 注入角落导航（回首页 + GitHub 图标）：路径按页面所在层级算，已经有的不重复加
 const navPos = m.meta?.nav ?? 'top-right';
 if (navPos !== false) {
   (function inject(d) {

@@ -18,7 +18,7 @@ Hands-on tests of AI models, with interactive demos you can play with right in t
 
 ```
 index.html              Gallery page (generated, don't edit by hand)
-assets/nav.js           Corner nav injected into every demo: back to the gallery / view source
+assets/nav.js           Corner nav injected into every demo: back to the gallery + a GitHub icon
 <short-name>/           One folder per demo, e.g. lost-cat-comic
   index.html            The demo page
   meta.json             Card info: title, date, tags, models, summary, notes
@@ -44,5 +44,5 @@ Notes
 - Only include files the page actually uses: no `.env`, raw videos or intermediate files.
 - GitHub rejects files over 100 MB, and a Pages site should stay under 1 GB. Pages doesn't serve Git LFS files, so commit large files directly.
 - Pages must work from any subfolder with relative paths (no absolute `/...` paths).
-- Every HTML page in a demo gets `assets/nav.js` injected: two links in the top-right corner (all demos / source). Set `meta.nav` to `top-left`, `bottom-right` or `bottom-left` to move it, or `false` to leave it out.
+- Every HTML page in a demo gets `assets/nav.js` injected: a link back to the gallery and a GitHub icon (linking to this repository) in the top-right corner. Set `meta.nav` to `top-left`, `bottom-right` or `bottom-left` to move it, or `false` to leave it out.
 - Commit messages are written in English.
