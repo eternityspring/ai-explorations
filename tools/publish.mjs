@@ -3,7 +3,7 @@
 //
 // 清单格式（由各评测自己的构建脚本生成，或手写）：
 // {
-//   "slug": "2026-10-lost-cat-comic",              // 文件夹名 = 网址路径，建议「年-月-英文短名」
+//   "slug": "lost-cat-comic",                      // 文件夹名 = 网址路径：英文短名，小写字母、数字和 -（日期写在 meta.date 里）
 //   "root": "/abs/path/to/eval/folder",             // files 里源路径的根目录
 //   "files": { "index.html": "page.html", "orbit/frames/x": "orbit/frames/x", ... },   // 发布后的路径 → 源路径（文件或文件夹）
 //   "meta": { "title", "titleEn", "date", "tags", "tagsEn", "models", "summary", "summaryEn", "notes": [[中, 英]...],

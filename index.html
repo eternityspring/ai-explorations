@@ -9,7 +9,7 @@
 <meta property="og:title" content="AI Explorations · AI 探索笔记">
 <meta property="og:description" content="一些 AI 模型的实测和可以直接上手玩的 demo。Hands-on tests and interactive demos of AI models.">
 <meta property="og:url" content="https://eternityspring.github.io/ai-explorations/">
-<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/2026-10-lost-cat-comic/cover.jpg">
+<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/lost-cat-comic/cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <style>
 :root { --bg:#f6f3ee; --card:#fffdf9; --ink:#1d1b18; --muted:#78716a; --line:#e4ddd2; --chip:#efe9df; --accent:#d6402a; --accent-ink:#fff; }
@@ -85,9 +85,9 @@ footer a { color:inherit; }
   </nav>
   <section class="grid">
   <article class="card" data-tags="图像生成|环绕视频|交互">
-    <a class="cover" href="2026-10-lost-cat-comic/index.html" aria-label="打开 demo：寻猫：一页可以转的漫画">
-      <img src="2026-10-lost-cat-comic/cover.jpg" alt="" loading="lazy">
-      <video muted loop playsinline preload="none" data-src="2026-10-lost-cat-comic/demo.mp4"></video>
+    <a class="cover" href="lost-cat-comic/index.html" aria-label="打开 demo：寻猫：一页可以转的漫画">
+      <img src="lost-cat-comic/cover.jpg" alt="" loading="lazy">
+      <video muted loop playsinline preload="none" data-src="lost-cat-comic/demo.mp4"></video>
       <span class="play">打开 demo<small>Open demo</small></span>
     </a>
     <div class="body">
@@ -97,7 +97,7 @@ footer a { color:inherit; }
       <p class="sum en" lang="en">Six comic panels drawn with Qwen Image 2.1, each turned into a 360° orbit video with MiniMax-H3 + the ORB360 LoRA, then assembled into one three.js page: drag any panel to circle the characters, click to zoom in — and try the Lost Cat poster in panel 2.</p>
       <p class="models"><code>Qwen Image 2.1</code><code>MiniMax-H3 Ref2VA</code><code>ORB360 LoRA (step 1500)</code><code>three.js</code></p>
       <details><summary>要点 <span lang="en">Notes</span></summary><ul><li>每一格的环绕都成立：转一圈回到原图，背面补得合理，角色前后一致，双人格也能一起转。<span lang="en">Every orbit closes the loop: plausible back views, consistent characters, even two people turning together.</span></li><li>官方提示词会把室内背景补成户外（草地、雪）；给每格写清 360° 环境后，卧室和菜市场都修好了。<span lang="en">The stock prompt turns indoor scenes into outdoor ones (grass, snow); describing each panel’s surroundings fixed the bedroom and the market.</span></li><li>提示词改不了图里已有的遮挡：主角背后贴着墙或广告牌，转到背面就看不到人，出图时要给背后留空。<span lang="en">Prompts can’t remove occluders already in the image — leave space behind the subject when drawing the panel.</span></li></ul></details>
-      <p class="links"><a class="btn primary" href="2026-10-lost-cat-comic/index.html">打开 demo <span lang="en">Open</span> ↗</a><a class="btn" href="2026-10-lost-cat-comic/demo.mp4">演示视频 <span lang="en">Video</span></a><a class="btn ghost" href="https://github.com/eternityspring/ai-explorations/tree/main/2026-10-lost-cat-comic">源文件 <span lang="en">Files</span></a></p>
+      <p class="links"><a class="btn primary" href="lost-cat-comic/index.html">打开 demo <span lang="en">Open</span> ↗</a><a class="btn" href="lost-cat-comic/demo.mp4">演示视频 <span lang="en">Video</span></a><a class="btn ghost" href="https://github.com/eternityspring/ai-explorations/tree/main/lost-cat-comic">源文件 <span lang="en">Files</span></a></p>
     </div>
   </article>
   </section>

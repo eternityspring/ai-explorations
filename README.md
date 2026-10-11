@@ -10,14 +10,14 @@ Hands-on tests of AI models, with interactive demos you can play with right in t
 <!-- evals:start -->
 | 日期 Date | Demo | 模型 Models |
 |---|---|---|
-| 2026-10-11 | [寻猫：一页可以转的漫画](https://eternityspring.github.io/ai-explorations/2026-10-lost-cat-comic/)<br>Lost Cat — a comic page you can spin | Qwen Image 2.1, MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), three.js |
+| 2026-10-11 | [寻猫：一页可以转的漫画](https://eternityspring.github.io/ai-explorations/lost-cat-comic/)<br>Lost Cat — a comic page you can spin | Qwen Image 2.1, MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), three.js |
 <!-- evals:end -->
 
 ## 结构 · Layout
 
 ```
 index.html              首页（自动生成，别手改）· generated gallery
-<年-月-短名>/            每个评测一个文件夹 · one folder per demo
+<英文短名>/              每个评测一个文件夹，如 lost-cat-comic · one folder per demo
   index.html            demo 页面
   meta.json             首页卡片信息：标题、日期、标签、模型、简介、要点
   cover.jpg  demo.mp4   封面和演示视频（可选）
