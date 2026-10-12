@@ -21,6 +21,7 @@
     "three.js"
   ],
   "date": "2026-10-12",
+  "nav": "bottom-right",
   "summary": "Qwen Image 2.1 画同一位名媛一周的朋友圈：六套夏日和度假造型，换了衣服，脸、卷发、泪痣、首饰都对得上；每格再用 MiniMax-H3 + ORB360 LoRA 生成 360° 环绕视频，拼成一页可以拖着转的漫画。周日那格衣架上的吊牌可以点。",
   "summaryEn": "A socialite’s week on her feed, drawn with Qwen Image 2.1: six summer and resort outfits, and her face, hair, beauty mark and jewelry hold steady through every change. Each panel becomes a 360° orbit with MiniMax-H3 + the ORB360 LoRA — drag to spin, and click the clothes rack on Sunday.",
   "notes": [
