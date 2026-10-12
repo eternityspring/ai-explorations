@@ -1,0 +1,47 @@
+{
+  "slug": "the-feed-comic",
+  "title": "朋友圈：一页可以转的漫画",
+  "titleEn": "The Feed — a comic page you can spin",
+  "tags": [
+    "图像生成",
+    "人物一致性",
+    "环绕视频",
+    "交互"
+  ],
+  "tagsEn": [
+    "Image generation",
+    "Character consistency",
+    "Orbit video",
+    "Interactive"
+  ],
+  "models": [
+    "Qwen Image 2.1",
+    "MiniMax-H3 Ref2VA",
+    "ORB360 LoRA (step 1500)",
+    "three.js"
+  ],
+  "date": "2026-10-12",
+  "summary": "Qwen Image 2.1 画同一位名媛一周的朋友圈：六套夏日和度假造型，换了衣服，脸、卷发、泪痣、首饰都对得上；每格再用 MiniMax-H3 + ORB360 LoRA 生成 360° 环绕视频，拼成一页可以拖着转的漫画。周日那格衣架上的吊牌可以点。",
+  "summaryEn": "A socialite’s week on her feed, drawn with Qwen Image 2.1: six summer and resort outfits, and her face, hair, beauty mark and jewelry hold steady through every change. Each panel becomes a 360° orbit with MiniMax-H3 + the ORB360 LoRA — drag to spin, and click the clothes rack on Sunday.",
+  "notes": [
+    [
+      "换装不换人：六套衣服、白天黑夜、浓妆素颜，脸、栗色卷发、右眼下的泪痣和金耳环都对得上。",
+      "Outfits change, she doesn’t: six looks, day and night, full makeup and none — same face, chestnut waves, beauty mark and gold hoops."
+    ],
+    [
+      "环绕时皮肤、薄纱、亮片都稳，背面补得合理：游艇补出船舱，悬崖泳池补出别墅，天台补出酒吧。",
+      "Skin, sheer fabric and sequins hold up through the orbit, and the back views make sense: a yacht cabin, cliffside villas, a rooftop bar."
+    ],
+    [
+      "大片平地是弱点：网球场 4 次里 3 次镜头升到头顶、画面翻倒，加“镜头保持水平”的提示词也救不回来，只能换种子；坐在地毯上那格加了这句就好了。",
+      "Big flat ground is the weak spot: on the clay court the camera rose overhead and flipped in 3 of 4 runs, and a “keep the camera level” prompt didn’t save it — only a new seed did. The same line did fix the panel where she sits on a rug."
+    ],
+    [
+      "身边的道具会被“粘”在人身上：漂浮早餐篮在一个种子里转到侧面就跑到她脚下，像站在篮子里；换个种子，篮子才老老实实留在甲板上。",
+      "Props near the subject can get glued to her: in one seed the floating breakfast tray slid under her feet as the camera came around, as if she were standing in it; another seed kept it on the deck."
+    ]
+  ],
+  "demo": "index.html",
+  "video": "demo.mp4",
+  "cover": "cover.jpg"
+}

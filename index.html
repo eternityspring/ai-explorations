@@ -20,7 +20,7 @@
 <meta property="og:title" content="AI Explorations · AI 探索笔记">
 <meta property="og:description" content="Hands-on tests and interactive demos of AI models. 一些 AI 模型的实测和可以直接上手玩的 demo。">
 <meta property="og:url" content="https://eternityspring.github.io/ai-explorations/">
-<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/lost-cat-comic/cover.jpg">
+<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/the-feed-comic/cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <style>
 :root { --bg:#f6f3ee; --card:#fffdf9; --ink:#1d1b18; --muted:#78716a; --line:#e4ddd2; --chip:#efe9df; --accent:#d6402a; --accent-ink:#fff; }
@@ -95,10 +95,26 @@ footer a { color:inherit; }
   <nav class="filters" aria-label="Filter">
     <button type="button" aria-pressed="true" data-tag=""><span class="zh ">全部</span><span class="en " lang="en">All</span></button>
     <button type="button" aria-pressed="false" data-tag="图像生成"><span class="zh ">图像生成</span><span class="en " lang="en">Image generation</span></button>
+    <button type="button" aria-pressed="false" data-tag="人物一致性"><span class="zh ">人物一致性</span><span class="en " lang="en">Character consistency</span></button>
     <button type="button" aria-pressed="false" data-tag="环绕视频"><span class="zh ">环绕视频</span><span class="en " lang="en">Orbit video</span></button>
     <button type="button" aria-pressed="false" data-tag="交互"><span class="zh ">交互</span><span class="en " lang="en">Interactive</span></button>
   </nav>
   <section class="grid">
+  <article class="card" data-tags="图像生成|人物一致性|环绕视频|交互">
+    <a class="cover" href="the-feed-comic/index.html" data-demo aria-label="The Feed — a comic page you can spin">
+      <img src="the-feed-comic/cover.jpg" alt="" loading="lazy">
+      <video muted loop playsinline preload="none" data-src="the-feed-comic/demo.mp4"></video>
+      <span class="play"><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span></span>
+    </a>
+    <div class="body">
+      <p class="meta"><time datetime="2026-10-12">2026-10-12</time><span class="tag"><span class="zh ">图像生成</span><span class="en " lang="en">Image generation</span></span><span class="tag"><span class="zh ">人物一致性</span><span class="en " lang="en">Character consistency</span></span><span class="tag"><span class="zh ">环绕视频</span><span class="en " lang="en">Orbit video</span></span><span class="tag"><span class="zh ">交互</span><span class="en " lang="en">Interactive</span></span></p>
+      <h2><span class="zh ">朋友圈：一页可以转的漫画</span><span class="en " lang="en">The Feed — a comic page you can spin</span></h2>
+      <p class="zh sum">Qwen Image 2.1 画同一位名媛一周的朋友圈：六套夏日和度假造型，换了衣服，脸、卷发、泪痣、首饰都对得上；每格再用 MiniMax-H3 + ORB360 LoRA 生成 360° 环绕视频，拼成一页可以拖着转的漫画。周日那格衣架上的吊牌可以点。</p><p class="en sum" lang="en">A socialite’s week on her feed, drawn with Qwen Image 2.1: six summer and resort outfits, and her face, hair, beauty mark and jewelry hold steady through every change. Each panel becomes a 360° orbit with MiniMax-H3 + the ORB360 LoRA — drag to spin, and click the clothes rack on Sunday.</p>
+      <p class="models"><code>Qwen Image 2.1</code><code>MiniMax-H3 Ref2VA</code><code>ORB360 LoRA (step 1500)</code><code>three.js</code></p>
+      <details><summary><span class="zh ">要点</span><span class="en " lang="en">Notes</span></summary><ul><li><span class="zh ">换装不换人：六套衣服、白天黑夜、浓妆素颜，脸、栗色卷发、右眼下的泪痣和金耳环都对得上。</span><span class="en " lang="en">Outfits change, she doesn’t: six looks, day and night, full makeup and none — same face, chestnut waves, beauty mark and gold hoops.</span></li><li><span class="zh ">环绕时皮肤、薄纱、亮片都稳，背面补得合理：游艇补出船舱，悬崖泳池补出别墅，天台补出酒吧。</span><span class="en " lang="en">Skin, sheer fabric and sequins hold up through the orbit, and the back views make sense: a yacht cabin, cliffside villas, a rooftop bar.</span></li><li><span class="zh ">大片平地是弱点：网球场 4 次里 3 次镜头升到头顶、画面翻倒，加“镜头保持水平”的提示词也救不回来，只能换种子；坐在地毯上那格加了这句就好了。</span><span class="en " lang="en">Big flat ground is the weak spot: on the clay court the camera rose overhead and flipped in 3 of 4 runs, and a “keep the camera level” prompt didn’t save it — only a new seed did. The same line did fix the panel where she sits on a rug.</span></li><li><span class="zh ">身边的道具会被“粘”在人身上：漂浮早餐篮在一个种子里转到侧面就跑到她脚下，像站在篮子里；换个种子，篮子才老老实实留在甲板上。</span><span class="en " lang="en">Props near the subject can get glued to her: in one seed the floating breakfast tray slid under her feet as the camera came around, as if she were standing in it; another seed kept it on the deck.</span></li></ul></details>
+      <p class="links"><a class="btn primary" href="the-feed-comic/index.html" data-demo><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span> ↗</a><a class="btn" href="the-feed-comic/demo.mp4"><span class="zh ">演示视频</span><span class="en " lang="en">Video</span></a></p>
+    </div>
+  </article>
   <article class="card" data-tags="图像生成|环绕视频|交互">
     <a class="cover" href="lost-cat-comic/index.html" data-demo aria-label="Lost Cat — a comic page you can spin">
       <img src="lost-cat-comic/cover.jpg" alt="" loading="lazy">
@@ -115,7 +131,7 @@ footer a { color:inherit; }
     </div>
   </article>
   </section>
-  <footer><span class="zh ">共 1 个 demo</span><span class="en " lang="en">1 demo</span> · <a href="https://github.com/eternityspring/ai-explorations">GitHub</a></footer>
+  <footer><span class="zh ">共 2 个 demo</span><span class="en " lang="en">2 demos</span> · <a href="https://github.com/eternityspring/ai-explorations">GitHub</a></footer>
 </main>
 <script>
 // 语言切换：记住选择、地址栏改成 ?lang=…；点进 demo 的链接带上当前语言

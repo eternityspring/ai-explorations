@@ -11,6 +11,7 @@ Hands-on tests of AI models, with interactive demos you can play with right in t
 <!-- evals:start -->
 | Demo | Models |
 |---|---|
+| [The Feed — a comic page you can spin](https://eternityspring.github.io/ai-explorations/the-feed-comic/) | Qwen Image 2.1, MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), three.js |
 | [Lost Cat — a comic page you can spin](https://eternityspring.github.io/ai-explorations/lost-cat-comic/) | Qwen Image 2.1, MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), three.js |
 <!-- evals:end -->
 
