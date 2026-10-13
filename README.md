@@ -11,6 +11,7 @@ Hands-on tests of AI models, with interactive demos you can play with right in t
 <!-- evals:start -->
 | Demo | Models |
 |---|---|
+| [Rooftop Dance — spin the scene while she keeps dancing](https://eternityspring.github.io/ai-explorations/rooftop-dance-360/) | Qwen Image 2.1, MiniMax-H3 FL2V (8-step turbo), MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), SAM 3.1 |
 | [The Feed — a comic page you can spin](https://eternityspring.github.io/ai-explorations/the-feed-comic/) | Qwen Image 2.1, MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), three.js |
 | [Lost Cat — a comic page you can spin](https://eternityspring.github.io/ai-explorations/lost-cat-comic/) | Qwen Image 2.1, MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), three.js |
 <!-- evals:end -->

@@ -20,7 +20,7 @@
 <meta property="og:title" content="AI Explorations · AI 探索笔记">
 <meta property="og:description" content="Hands-on tests and interactive demos of AI models. 一些 AI 模型的实测和可以直接上手玩的 demo。">
 <meta property="og:url" content="https://eternityspring.github.io/ai-explorations/">
-<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/the-feed-comic/cover.jpg">
+<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/rooftop-dance-360/cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <style>
 :root { --bg:#f6f3ee; --card:#fffdf9; --ink:#1d1b18; --muted:#78716a; --line:#e4ddd2; --chip:#efe9df; --accent:#d6402a; --accent-ink:#fff; }
@@ -94,12 +94,29 @@ footer a { color:inherit; }
   </header>
   <nav class="filters" aria-label="Filter">
     <button type="button" aria-pressed="true" data-tag=""><span class="zh ">全部</span><span class="en " lang="en">All</span></button>
+    <button type="button" aria-pressed="false" data-tag="视频生成"><span class="zh ">视频生成</span><span class="en " lang="en">Video generation</span></button>
+    <button type="button" aria-pressed="false" data-tag="环绕视频"><span class="zh ">环绕视频</span><span class="en " lang="en">Orbit video</span></button>
+    <button type="button" aria-pressed="false" data-tag="抠像"><span class="zh ">抠像</span><span class="en " lang="en">Matting</span></button>
+    <button type="button" aria-pressed="false" data-tag="交互"><span class="zh ">交互</span><span class="en " lang="en">Interactive</span></button>
     <button type="button" aria-pressed="false" data-tag="图像生成"><span class="zh ">图像生成</span><span class="en " lang="en">Image generation</span></button>
     <button type="button" aria-pressed="false" data-tag="人物一致性"><span class="zh ">人物一致性</span><span class="en " lang="en">Character consistency</span></button>
-    <button type="button" aria-pressed="false" data-tag="环绕视频"><span class="zh ">环绕视频</span><span class="en " lang="en">Orbit video</span></button>
-    <button type="button" aria-pressed="false" data-tag="交互"><span class="zh ">交互</span><span class="en " lang="en">Interactive</span></button>
   </nav>
   <section class="grid">
+  <article class="card" data-tags="视频生成|环绕视频|抠像|交互">
+    <a class="cover" href="rooftop-dance-360/index.html" data-demo aria-label="Rooftop Dance — spin the scene while she keeps dancing">
+      <img src="rooftop-dance-360/cover.jpg" alt="" loading="lazy">
+      <video muted loop playsinline preload="none" data-src="rooftop-dance-360/demo.mp4"></video>
+      <span class="play"><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span></span>
+    </a>
+    <div class="body">
+      <p class="meta"><time datetime="2026-10-13">2026-10-13</time><span class="tag"><span class="zh ">视频生成</span><span class="en " lang="en">Video generation</span></span><span class="tag"><span class="zh ">环绕视频</span><span class="en " lang="en">Orbit video</span></span><span class="tag"><span class="zh ">抠像</span><span class="en " lang="en">Matting</span></span><span class="tag"><span class="zh ">交互</span><span class="en " lang="en">Interactive</span></span></p>
+      <h2><span class="zh ">天台起舞：她一直在跳，拖着转整个天台</span><span class="en " lang="en">Rooftop Dance — spin the scene while she keeps dancing</span></h2>
+      <p class="zh sum">接着《朋友圈》第 4 格：苏曼在天台派对上一直在跳舞，拖动画面，整个天台绕着她转。背景和人分开生成——空天台用 MiniMax-H3 + ORB360 LoRA 绕一圈，跳舞用 H3 首尾帧出一段能无缝循环的 5 秒视频，再用 SAM 3.1 抠出来叠在中间，音乐也是 H3 一起生成的。</p><p class="en sum" lang="en">A follow-up to panel 4 of The Feed: she keeps dancing at the rooftop party while you drag to spin the whole rooftop around her. The background and the dancer are made separately — an empty-rooftop orbit from MiniMax-H3 + the ORB360 LoRA, and a seamlessly looping 5-second dance from H3 first/last-frame video, cut out with SAM 3.1 and layered in the middle. The music comes from H3 too.</p>
+      <p class="models"><code>Qwen Image 2.1</code><code>MiniMax-H3 FL2V (8-step turbo)</code><code>MiniMax-H3 Ref2VA</code><code>ORB360 LoRA (step 1500)</code><code>SAM 3.1</code></p>
+      <details><summary><span class="zh ">要点</span><span class="en " lang="en">Notes</span></summary><ul><li><span class="zh ">两层分开，所以她永远正面朝你：拖动转的是背景，镜头不会绕到她背后。</span><span class="en " lang="en">Two separate layers, so she always faces you: dragging spins the background, and the camera never goes around behind her.</span></li><li><span class="zh ">让 ORB360 绕一块空地转：2 个种子里 1 个真的绕了一圈、首尾接得上；另一个把整个画面原地翻滚，城市都倒过来了。</span><span class="en " lang="en">Asking ORB360 to orbit an empty spot: one of two seeds circled properly and looped cleanly; the other rolled the whole frame, skyline upside down.</span></li><li><span class="zh ">人糊是因为太小：1024×768 里她的脸只有约 76 像素，一跳就糊成蜡像；整张图提到 1536×1152 后，同样的显示尺寸下脸部清晰度约是原来的 3 倍。</span><span class="en " lang="en">The blur came from size: at 1024×768 her face was about 76 px and smeared as soon as she moved; at 1536×1152 the face is about 3× sharper at the same display size.</span></li><li><span class="zh ">想裁成竖构图让她更大，结果 5 次全都推镜头（推近 1.09–1.6 倍），提示词写了不准推也没用；横构图 4 次都纹丝不动。</span><span class="en " lang="en">Cropping to a tall portrait to make her bigger backfired: all 5 runs pushed in (1.09–1.6×), even with a no-zoom prompt; all 4 landscape runs held perfectly still.</span></li><li><span class="zh ">SAM 3.1 按 woman 抠人不带她手里的酒杯，要再按 cocktail glass 抠一次补上。</span><span class="en " lang="en">SAM 3.1’s “woman” mask leaves out the cocktail glass in her hand; a second “cocktail glass” pass fills it in.</span></li></ul></details>
+      <p class="links"><a class="btn primary" href="rooftop-dance-360/index.html" data-demo><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span> ↗</a><a class="btn" href="rooftop-dance-360/demo.mp4"><span class="zh ">演示视频</span><span class="en " lang="en">Video</span></a></p>
+    </div>
+  </article>
   <article class="card" data-tags="图像生成|人物一致性|环绕视频|交互">
     <a class="cover" href="the-feed-comic/index.html" data-demo aria-label="The Feed — a comic page you can spin">
       <img src="the-feed-comic/cover.jpg" alt="" loading="lazy">
@@ -131,7 +148,7 @@ footer a { color:inherit; }
     </div>
   </article>
   </section>
-  <footer><span class="zh ">共 2 个 demo</span><span class="en " lang="en">2 demos</span> · <a href="https://github.com/eternityspring/ai-explorations">GitHub</a></footer>
+  <footer><span class="zh ">共 3 个 demo</span><span class="en " lang="en">3 demos</span> · <a href="https://github.com/eternityspring/ai-explorations">GitHub</a></footer>
 </main>
 <script>
 // 语言切换：记住选择、地址栏改成 ?lang=…；点进 demo 的链接带上当前语言

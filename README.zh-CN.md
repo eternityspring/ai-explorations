@@ -11,6 +11,7 @@
 <!-- evals:start -->
 | Demo | 模型 |
 |---|---|
+| [天台起舞：她一直在跳，拖着转整个天台](https://eternityspring.github.io/ai-explorations/rooftop-dance-360/) | Qwen Image 2.1, MiniMax-H3 FL2V (8-step turbo), MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), SAM 3.1 |
 | [朋友圈：一页可以转的漫画](https://eternityspring.github.io/ai-explorations/the-feed-comic/) | Qwen Image 2.1, MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), three.js |
 | [寻猫：一页可以转的漫画](https://eternityspring.github.io/ai-explorations/lost-cat-comic/) | Qwen Image 2.1, MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), three.js |
 <!-- evals:end -->

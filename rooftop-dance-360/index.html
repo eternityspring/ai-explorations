@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>天台起舞 360° · Rooftop Dance 360°</title>
+<meta name="description" content="她一直在跳，拖动画面转动整个天台。She keeps dancing while you drag to spin the whole rooftop around her.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="天台起舞 Rooftop Dance · 拖着转整个天台">
+<meta property="og:description" content="她一直在跳，拖动画面转动整个天台。She keeps dancing while you drag to spin the whole rooftop around her.">
+<meta property="og:url" content="https://eternityspring.github.io/ai-explorations/rooftop-dance-360/">
+<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/rooftop-dance-360/cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root { --bg:#f3efe7; --ink:#1f1d1a; --muted:#7b756b; --line:#ddd5c6; --card:#fffdf8; --accent:#d9472b; --stage:#111113; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#141417; --ink:#ecebe6; --muted:#9a978f; --line:#2d2d34; --card:#1c1c21; --accent:#ff6a4d; --stage:#0b0b0d; } }
+:root[data-theme="dark"] { --bg:#141417; --ink:#ecebe6; --muted:#9a978f; --line:#2d2d34; --card:#1c1c21; --accent:#ff6a4d; --stage:#0b0b0d; }
+* { box-sizing:border-box; }
+html, body { margin:0; background:var(--bg); color:var(--ink); }
+body { font:15px/1.6 "PingFang SC","Hiragino Sans GB","Noto Sans SC",sans-serif; -webkit-font-smoothing:antialiased; }
+main { max-width:1120px; margin:0 auto; padding:24px 16px 56px; }
+header { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:16px; }
+h1 { margin:0; font:600 30px/1.1 "Songti SC","Noto Serif SC",serif; letter-spacing:.06em; }
+h1 small { display:block; margin:8px 0 0; font:400 14px/1.35 "PingFang SC","Hiragino Sans GB",sans-serif; letter-spacing:0; color:var(--muted); }
+.en { display:block; font-family:"Avenir Next","Helvetica Neue",Arial,sans-serif; font-size:.86em; opacity:.85; }
+h1 .en-title { font:500 17px/1.2 "Avenir Next","Helvetica Neue",Arial,sans-serif; letter-spacing:.02em; color:var(--muted); margin-left:10px; }
+.keys { color:var(--muted); font-size:13px; text-align:right; white-space:nowrap; line-height:1.7; }
+/* 发布版：右上角固定着「AI 探索笔记 + GitHub」导航，标题栏右边让出位置（挪页面，不挪导航） */
+body.publish header { padding-right:210px; }
+.keys kbd { font:12px/1 ui-monospace,Menlo,monospace; border:1px solid var(--line); border-bottom-width:2px; border-radius:4px; padding:2px 5px; background:var(--card); }
+
+.stage { position:relative; width:min(100%, calc((100vh - 200px) * 4 / 3)); min-width:min(100%, 320px); aspect-ratio:4/3; margin:0 auto;
+  background:var(--stage); border-radius:6px; overflow:hidden; cursor:grab; touch-action:pan-y; user-select:none; -webkit-user-select:none; }
+.stage.dragging { cursor:grabbing; }
+.stage canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
+.ov { position:absolute; pointer-events:none; color:#fff; }
+.dial { top:10px; right:12px; display:flex; align-items:center; gap:8px; background:rgba(0,0,0,.42); padding:5px 12px 5px 5px; border-radius:999px; backdrop-filter:blur(6px); font:600 13px/1 ui-monospace,Menlo,monospace; }
+.dial svg { width:30px; height:30px; display:block; }
+.dial .deg { min-width:3.2em; text-align:right; }
+.hint { left:12px; bottom:12px; background:rgba(0,0,0,.5); padding:8px 18px; border-radius:16px; font-size:14px; line-height:1.35;
+  backdrop-filter:blur(6px); transition:opacity .6s; white-space:nowrap; }
+.hint.off { opacity:0; }
+.bar { left:0; bottom:0; height:3px; width:0; background:var(--accent); transition:width .2s, opacity .6s; }
+.bar.done { opacity:0; }
+
+.controls { display:flex; justify-content:center; align-items:center; gap:8px; margin:14px 0 18px; flex-wrap:wrap; }
+.controls button, .controls a { font:inherit; font-size:14px; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:999px;
+  padding:6px 16px; cursor:pointer; text-decoration:none; display:inline-flex; flex-direction:column; align-items:center; line-height:1.3; }
+.controls small { font:500 11px/1.2 "Avenir Next","Helvetica Neue",Arial,sans-serif; opacity:.75; }
+.controls button:hover, .controls a:hover { border-color:var(--muted); }
+.controls button[aria-pressed="true"] { background:var(--ink); color:var(--bg); border-color:var(--ink); }
+.note { margin:18px auto 0; max-width:760px; color:var(--muted); font-size:13px; }
+.note b { color:var(--ink); font-weight:600; }
+.note + .note { margin-top:8px; font-family:"Avenir Next","Helvetica Neue",Arial,sans-serif; }
+
+@media (max-width:720px) {
+  header { flex-direction:column; gap:6px; } .keys { display:none; }
+  h1 { font-size:24px; } h1 .en-title { display:block; margin:4px 0 0; font-size:15px; }
+  .hint { font-size:12px; padding:6px 12px; left:8px; bottom:8px; }
+  body.publish header { padding-right:84px; }
+}
+</style>
+</head>
+<body class="publish">
+<main>
+  <header>
+    <h1>天台起舞 360°<span class="en-title">Rooftop Dance</span><small>她一直在跳，拖动画面转动整个天台<span class="en">She keeps dancing — drag to spin the whole rooftop</span></small></h1>
+    <div class="keys"><kbd>←</kbd> <kbd>→</kbd> 旋转 · <kbd>空格</kbd> 自动旋转 · <kbd>D</kbd> 跳舞<span class="en"><kbd>←</kbd> <kbd>→</kbd> spin · <kbd>Space</kbd> auto-spin · <kbd>D</kbd> dance</span></div>
+  </header>
+
+  <div class="stage" id="stage" role="img" aria-label="天台环绕：拖动左右转动场景，中间的人一直在跳舞 / Rooftop orbit: drag left or right to spin the scene while she keeps dancing">
+    <div class="ov dial" aria-hidden="true">
+      <svg viewBox="0 0 30 30"><circle cx="15" cy="15" r="11" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+        <circle cx="15" cy="4" r="2" fill="rgba(255,255,255,.6)"/><circle id="dot" cx="15" cy="4" r="3.6" fill="#fff"/></svg>
+      <span class="deg" id="deg">0°</span>
+    </div>
+    <div class="ov hint" id="hint">‹ 按住拖动，转动整个天台 ›<span class="en">‹ Drag to spin the rooftop ›</span></div>
+    <div class="ov bar" id="bar"></div>
+  </div>
+
+  <div class="controls">
+    <button id="sound" aria-pressed="false">开声音<small>Sound on</small></button>
+    <button id="dance" aria-pressed="true">跳舞<small>Dancing</small></button>
+    <button id="auto" aria-pressed="false">自动旋转<small>Auto-spin</small></button>
+  </div>
+  <p class="note"><b>做法</b>：背景和人分两层。背景是《朋友圈》第 4 格用 Qwen Image 2.1 去掉人之后的空天台，再用 MiniMax-H3 + ORB360 LoRA 绕一圈（1024×768 · 124 帧 · 20 步）；人是同一张原图当首帧和尾帧，MiniMax-H3 FL2V（8 步 turbo，1536×1152）出一段原地跳舞、首尾相接的 5 秒视频，SAM 3.1 逐帧抠出来叠在中间循环播放，音乐也是 H3 一起生成的。拖动只转背景，所以无论转到哪个角度，她都是正面朝着你。</p>
+  <p class="note" lang="en"><b>How it’s made</b>: two layers. The background is panel 4 of The Feed with her removed by Qwen Image 2.1, then orbited by MiniMax-H3 + the ORB360 LoRA (1024×768 · 124 frames · 20 steps). The dancer uses the same picture as both first and last frame: MiniMax-H3 FL2V (8-step turbo, 1536×1152) makes a 5-second dance that loops seamlessly, SAM 3.1 cuts her out frame by frame, and she loops in the middle. The music comes from H3 too. Dragging only spins the background, so she faces you from every angle.</p>
+</main>
+<audio id="music" src="dance.m4a" loop preload="auto"></audio>
+
+<script>
+const N = 123;                    // 背景一圈的帧数（环绕视频最后一帧回到起点，不重复用）
+const D = {"n": 123, "x": 304.0, "y": 26.67, "w": 345.33, "h": 741.33, "shadow": {"x": 514.6, "y": 754.0, "rx": 105.5, "ry": 23.2}};               // 跳舞层：帧数、在 1024×768 原画面里的裁切框、脚下影子
+const SRC_W = 1024, SRC_H = 768, FPS = 24;
+const $ = (id) => document.getElementById(id);
+const stage = $('stage');
+
+const SIGN = 1;                     // 往右拖 = 相机顺时针前进
+const AUTO_DEG_PER_S = 360 / 12;    // 自动旋转 12 秒一圈
+
+let angle = 0, vel = 0, dragging = false, auto = false, dancing = true, touched = false;
+let danceClock = 0;                 // 没开声音时跳舞按自己的时钟走；开了声音就跟音乐对齐
+
+const cv = document.createElement('canvas'), ctx = cv.getContext('2d');
+stage.prepend(cv);
+function fit() { const r = Math.min(devicePixelRatio, 2); cv.width = Math.round(stage.clientWidth * r); cv.height = Math.round(stage.clientHeight * r); }
+new ResizeObserver(fit).observe(stage);
+
+// 两组帧：背景（先粗后细）+ 跳舞层（按顺序）。没到的帧用最近的已加载帧顶上
+const bg = [], dn = []; let loaded = 0; const TOTAL = N + D.n;
+function coarseToFine(n) {
+  const seen = new Set(), out = [];
+  for (let step = 64; step >= 1; step >>= 1) for (let i = 0; i < n; i += step) if (!seen.has(i)) { seen.add(i); out.push(i); }
+  return out;
+}
+const jobs = [];
+const dq = coarseToFine(D.n), bq = coarseToFine(N);
+for (let i = 0; i < Math.max(dq.length, bq.length); i++) {
+  if (i < dq.length) jobs.push([dn, `dancer/${String(dq[i]).padStart(3, '0')}.webp`, dq[i]]);
+  if (i < bq.length) jobs.push([bg, `frames/${String(bq[i]).padStart(3, '0')}.jpg`, bq[i]]);
+}
+let k = 0;
+async function worker() {
+  while (k < jobs.length) {
+    const [arr, src, i] = jobs[k++], im = new Image();
+    try { await new Promise((ok, bad) => { im.onload = ok; im.onerror = bad; im.src = src; }); arr[i] = im; } catch {}
+    loaded++;
+    $('bar').style.width = `${loaded / TOTAL * 100}%`;
+    $('bar').classList.toggle('done', loaded >= TOTAL);
+  }
+}
+for (let w = 0; w < 6; w++) worker();
+function nearest(arr, n, f) {
+  for (let d = 0; d <= n / 2; d++) { const a = arr[(f + d) % n] ?? arr[(f - d + n) % n]; if (a) return a; }
+  return null;
+}
+
+function draw(bgImg, dImg) {
+  if (!cv.width) return;
+  const sx = cv.width / SRC_W, sy = cv.height / SRC_H;
+  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';  // 改画布尺寸会重置这两项，每次画之前设
+  if (bgImg) ctx.drawImage(bgImg, 0, 0, cv.width, cv.height);
+  else { ctx.fillStyle = '#111'; ctx.fillRect(0, 0, cv.width, cv.height); }
+  // 脚下一圈软影子，把人“放”在地上
+  const s = D.shadow, g = ctx.createRadialGradient(s.x * sx, s.y * sy, 0, s.x * sx, s.y * sy, s.rx * sx);
+  g.addColorStop(0, 'rgba(0,0,0,.45)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.save(); ctx.translate(s.x * sx, s.y * sy); ctx.scale(1, s.ry / s.rx); ctx.translate(-s.x * sx, -s.y * sy);
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(s.x * sx, s.y * sy, s.rx * sx, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+  if (dImg) ctx.drawImage(dImg, D.x * sx, D.y * sy, D.w * sx, D.h * sy);
+}
+const frameOf = () => ((Math.round(angle / 360 * N) % N) + N) % N;
+function setAuto(on) { auto = on; $('auto').setAttribute('aria-pressed', on); }
+function interacted() { if (!touched) { touched = true; $('hint').classList.add('off'); } }
+
+// 拖动 / 触控板 / 键盘
+let lastX = 0, lastT = 0;
+const degPerPx = () => 360 / (stage.clientWidth * 1.25);
+stage.addEventListener('pointerdown', (e) => {
+  dragging = true; vel = 0; lastX = e.clientX; lastT = performance.now();
+  stage.setPointerCapture(e.pointerId); stage.classList.add('dragging');
+  setAuto(false); interacted();
+});
+stage.addEventListener('pointermove', (e) => {
+  if (!dragging) return;
+  const now = performance.now(), dx = e.clientX - lastX, dt = Math.max(1, now - lastT) / 1000;
+  const d = dx * degPerPx() * SIGN;
+  angle += d; vel = vel * 0.6 + (d / dt) * 0.4;
+  lastX = e.clientX; lastT = now;
+});
+const endDrag = () => { if (!dragging) return; dragging = false; stage.classList.remove('dragging'); if (performance.now() - lastT > 80) vel = 0; };
+stage.addEventListener('pointerup', endDrag);
+stage.addEventListener('pointercancel', endDrag);
+stage.addEventListener('wheel', (e) => {
+  if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+  e.preventDefault(); setAuto(false); interacted(); vel = 0;
+  angle -= e.deltaX * degPerPx() * SIGN;
+}, { passive: false });
+const keys = new Set();
+addEventListener('keydown', (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { keys.add(e.key); setAuto(false); interacted(); e.preventDefault(); }
+  else if (e.key === ' ') { setAuto(!auto); e.preventDefault(); }
+  else if (e.key === 'd' || e.key === 'D') setDance(!dancing);
+});
+addEventListener('keyup', (e) => keys.delete(e.key));
+$('auto').onclick = () => { setAuto(!auto); vel = 0; };
+
+const music = $('music');
+function setDance(on) {
+  dancing = on; $('dance').setAttribute('aria-pressed', on);
+  if (!on) music.pause(); else if ($('sound').getAttribute('aria-pressed') === 'true') { music.currentTime = danceClock % music.duration || 0; music.play().catch(() => {}); }
+}
+$('dance').onclick = () => setDance(!dancing);
+$('sound').onclick = () => {
+  const on = $('sound').getAttribute('aria-pressed') !== 'true';
+  $('sound').setAttribute('aria-pressed', on); $('sound').innerHTML = on ? '关声音<small>Sound off</small>' : '开声音<small>Sound on</small>';
+  if (on && dancing) { music.currentTime = danceClock % (music.duration || 1e9); music.play().catch(() => {}); } else music.pause();
+};
+
+let prevT = performance.now();
+function tick(now) {
+  const dt = Math.min(0.05, (now - prevT) / 1000); prevT = now;
+  if (keys.size) angle += (keys.has('ArrowRight') ? 1 : -1) * 120 * dt * SIGN;
+  else if (!dragging) {
+    if (auto) angle += AUTO_DEG_PER_S * dt;
+    else { angle += vel * dt; vel *= Math.exp(-dt * 2.8); if (Math.abs(vel) < 2) vel = 0; }
+  }
+  if (dancing) danceClock = !music.paused ? music.currentTime : danceClock + dt;
+  const df = Math.floor(danceClock * FPS) % D.n;
+  const f = frameOf();
+  draw(nearest(bg, N, f), nearest(dn, D.n, df));
+  const az = f / N * 360, r = az * Math.PI / 180;
+  $('deg').textContent = `${Math.round(az)}°`;
+  $('dot').setAttribute('cx', 15 + 11 * Math.sin(r));
+  $('dot').setAttribute('cy', 15 - 11 * Math.cos(r));
+  requestAnimationFrame(tick);
+}
+setTimeout(() => { if (!touched) $('hint').classList.add('off'); }, 7000);
+requestAnimationFrame(tick);
+</script>
+<script src="../assets/nav.js" async data-pos="top-right"></script>
+</body>
+</html>
