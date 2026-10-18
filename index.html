@@ -20,7 +20,7 @@
 <meta property="og:title" content="AI Explorations · AI 探索笔记">
 <meta property="og:description" content="Hands-on tests and interactive demos of AI models. 一些 AI 模型的实测和可以直接上手玩的 demo。">
 <meta property="og:url" content="https://eternityspring.github.io/ai-explorations/">
-<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/rooftop-dance-360/cover.jpg">
+<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/drama3-vs-indextts/cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <style>
 :root { --bg:#f6f3ee; --card:#fffdf9; --ink:#1d1b18; --muted:#78716a; --line:#e4ddd2; --chip:#efe9df; --accent:#d6402a; --accent-ink:#fff; }
@@ -94,14 +94,32 @@ footer a { color:inherit; }
   </header>
   <nav class="filters" aria-label="Filter">
     <button type="button" aria-pressed="true" data-tag=""><span class="zh ">全部</span><span class="en " lang="en">All</span></button>
+    <button type="button" aria-pressed="false" data-tag="语音合成"><span class="zh ">语音合成</span><span class="en " lang="en">Speech synthesis</span></button>
+    <button type="button" aria-pressed="false" data-tag="TTS 对比"><span class="zh ">TTS 对比</span><span class="en " lang="en">TTS comparison</span></button>
+    <button type="button" aria-pressed="false" data-tag="盲听"><span class="zh ">盲听</span><span class="en " lang="en">Blind test</span></button>
+    <button type="button" aria-pressed="false" data-tag="交互"><span class="zh ">交互</span><span class="en " lang="en">Interactive</span></button>
     <button type="button" aria-pressed="false" data-tag="视频生成"><span class="zh ">视频生成</span><span class="en " lang="en">Video generation</span></button>
     <button type="button" aria-pressed="false" data-tag="环绕视频"><span class="zh ">环绕视频</span><span class="en " lang="en">Orbit video</span></button>
     <button type="button" aria-pressed="false" data-tag="抠像"><span class="zh ">抠像</span><span class="en " lang="en">Matting</span></button>
-    <button type="button" aria-pressed="false" data-tag="交互"><span class="zh ">交互</span><span class="en " lang="en">Interactive</span></button>
     <button type="button" aria-pressed="false" data-tag="图像生成"><span class="zh ">图像生成</span><span class="en " lang="en">Image generation</span></button>
     <button type="button" aria-pressed="false" data-tag="人物一致性"><span class="zh ">人物一致性</span><span class="en " lang="en">Character consistency</span></button>
   </nav>
   <section class="grid">
+  <article class="card" data-tags="语音合成|TTS 对比|盲听|交互">
+    <a class="cover" href="drama3-vs-indextts/index.html" data-demo aria-label="Drama 3 vs IndexTTS 2.5 — speaks 10× sooner, with better emotion">
+      <img src="drama3-vs-indextts/cover.jpg" alt="" loading="lazy">
+      
+      <span class="play"><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span></span>
+    </a>
+    <div class="body">
+      <p class="meta"><time datetime="2026-10-18">2026-10-18</time><span class="tag"><span class="zh ">语音合成</span><span class="en " lang="en">Speech synthesis</span></span><span class="tag"><span class="zh ">TTS 对比</span><span class="en " lang="en">TTS comparison</span></span><span class="tag"><span class="zh ">盲听</span><span class="en " lang="en">Blind test</span></span><span class="tag"><span class="zh ">交互</span><span class="en " lang="en">Interactive</span></span></p>
+      <h2><span class="zh ">Drama 3 对 IndexTTS 2.5：开口快十倍，情绪更到位</span><span class="en " lang="en">Drama 3 vs IndexTTS 2.5 — speaks 10× sooner, with better emotion</span></h2>
+      <p class="zh sum">Fish Audio 新开源的 Drama 3 和 IndexTTS 2.5，用同样两个音色比了三个场景：像发微信语音那样聊天、演十种情绪、念一篇口播稿。Drama 3 用社区 int4 量化版跑在 40GB 的 A100 上，开口中位数 0.26 秒，IndexTTS 要 2.6 秒。两段语音电话能按真实延迟回放，所有 A/B 都能开盲听。</p><p class="en sum" lang="en">Fish Audio's newly open-sourced Drama 3 against IndexTTS 2.5, same two voices, three scenes: chatty WeChat-style voice messages, ten emotions, and a narration script. Drama 3 runs as the community int4 quant on a 40GB A100 and starts speaking in 0.26 s (median) versus 2.6 s for IndexTTS. Two voice calls replay with their real latency, and every A/B pair can be blind-tested. The page is in Chinese.</p>
+      <p class="models"><code>Drama 3 int4 (fishaudio/drama-3-int4)</code><code>IndexTTS 2.5</code><code>SGLang-Omni 0.1.8</code><code>Whisper turbo</code><code>emotion2vec_plus_large</code></p>
+      <details><summary><span class="zh ">要点</span><span class="en " lang="en">Notes</span></summary><ul><li><span class="zh ">打电话：IndexTTS 生成和播放差不多快（实时率 1.02），模拟通话里 20 句有 14 句播到一半要停下来等；Drama 3 实时率 0.26，一句没卡。</span><span class="en " lang="en">On calls: IndexTTS generates about as fast as it plays (RTF 1.02), so 14 of 20 lines stalled mid-playback; Drama 3 runs at RTF 0.26 and never stalled.</span></li><li><span class="zh ">情绪：句首加 [sad]、[angry] 这类标签，emotion2vec 判对 11/18，不加 9/18，IndexTTS 的情绪向量 7/18；厌恶谁都没做出来。</span><span class="en " lang="en">Emotion: with tags like [sad] or [angry] up front, emotion2vec agreed on 11/18, 9/18 without tags, and 7/18 for IndexTTS emotion vectors. Nobody managed disgust.</span></li><li><span class="zh ">Drama 3 的语速跟着参考音频走：2.4 秒的快语速参考让它每秒说 6 个字，听着像在赶；IndexTTS 两个音色都稳在每秒 4 字左右。</span><span class="en " lang="en">Drama 3 copies the pace of its reference clip: a fast 2.4-second reference made it speak about 6 characters a second, which sounds rushed; IndexTTS stays near 4 for both voices.</span></li><li><span class="zh ">int4 版在 A100-40GB 上占约 28GB 显存；为了塞进去关掉了预填充 CUDA graph，4 路并发时每路开口涨到 2.6–2.7 秒。</span><span class="en " lang="en">The int4 build takes about 28GB on an A100-40GB. Fitting it meant turning off prefill CUDA graphs, and with 4 concurrent requests each one took 2.6–2.7 s to start.</span></li><li><span class="zh ">SGLang-Omni 0.1.8 还不支持多角色和续写式编辑，模型卡上这两项暂时用不了。</span><span class="en " lang="en">SGLang-Omni 0.1.8 doesn't support multi-speaker or continuation editing yet, so those two model-card features aren't usable for now.</span></li></ul></details>
+      <p class="links"><a class="btn primary" href="drama3-vs-indextts/index.html" data-demo><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span> ↗</a></p>
+    </div>
+  </article>
   <article class="card" data-tags="视频生成|环绕视频|抠像|交互">
     <a class="cover" href="rooftop-dance-360/index.html" data-demo aria-label="Rooftop Dance — spin the scene while she keeps dancing">
       <img src="rooftop-dance-360/cover.jpg" alt="" loading="lazy">
@@ -148,7 +166,7 @@ footer a { color:inherit; }
     </div>
   </article>
   </section>
-  <footer><span class="zh ">共 3 个 demo</span><span class="en " lang="en">3 demos</span> · <a href="https://github.com/eternityspring/ai-explorations">GitHub</a></footer>
+  <footer><span class="zh ">共 4 个 demo</span><span class="en " lang="en">4 demos</span> · <a href="https://github.com/eternityspring/ai-explorations">GitHub</a></footer>
 </main>
 <script>
 // 语言切换：记住选择、地址栏改成 ?lang=…；点进 demo 的链接带上当前语言
