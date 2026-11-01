@@ -1,0 +1,50 @@
+{
+  "slug": "pika-h3-flex",
+  "title": "Pika H3 Flex 实测：6 步快 3 倍，黏土风格会跑偏",
+  "titleEn": "Pika H3 Flex — 3× faster in 6 steps, but clay turns into polished 3D",
+  "date": "2026-11-01",
+  "tags": [
+    "视频生成",
+    "加速 LoRA",
+    "有声视频",
+    "对比"
+  ],
+  "tagsEn": [
+    "Video generation",
+    "Speed-up LoRA",
+    "Video with audio",
+    "Comparison"
+  ],
+  "models": [
+    "Pika H3 Flex FL2VA LoRA (Comfy-Org bf16)",
+    "MiniMax-H3 FL2VA (pruned int8)",
+    "ComfyUI 0.39",
+    "mlx-whisper large-v3-turbo"
+  ],
+  "summary": "Pika 在 MiniMax H3 上后训练的 LoRA，6 步出带声音的视频。在一张 RTX 4080 上的 ComfyUI 里，同提示词、同种子和原版 20 步比了 4 组：官方示例的卡通包子，加三个自写的 8 秒剧本（写实办公室对白、古装公堂、黏土定格）。8 秒一条 328 秒对 1009 秒，台词一字不差，画面更清楚；只有黏土那组被做成了精致 3D。",
+  "summaryEn": "Pika's post-trained LoRA for MiniMax H3 makes video with sound in 6 steps. On one RTX 4080 in ComfyUI, with the same prompts and seeds as the stock 20-step run, four pairs: the official cartoon-dumpling example plus three original 8-second scripts (a realistic office dialogue, a period courtroom, and clay stop-motion). An 8-second clip took 328 s instead of 1009 s, every spoken line came out right and the picture was sharper; only the clay one turned into polished 3D. The page is in Chinese.",
+  "notes": [
+    [
+      "两边每步耗时一样（8 秒约 49 秒一步），快全靠步数少：三条 8 秒 Flex 327～330 秒，原版 1008～1011 秒。",
+      "Each step takes the same time on both (about 49 s at 8 seconds); the speed-up comes entirely from fewer steps: 327–330 s for Flex vs 1008–1011 s for the base on the three 8-second clips."
+    ],
+    [
+      "两组对白共 6 句，Whisper 转写两边都一字不差（只有一个同音字是转写的问题），切点都在提示词写的时间 ±0.25 秒内。",
+      "Across 6 dialogue lines in two scripts, Whisper transcripts matched the script on both sides (one homophone was a transcription slip), and the cuts landed within ±0.25 s of the prompted time."
+    ],
+    [
+      "黏土定格那组原版是哑光的手捏黏土，Flex 做成了光滑的 3D 微缩模型，手作感没了；清晰度指标高在这里不是好事。",
+      "In the clay stop-motion pair the base looks like matte hand-pressed clay, while Flex renders smooth 3D miniatures and the handmade feel is gone. A higher sharpness score isn't a win here."
+    ],
+    [
+      "4 组里有 3 组两边构图、走位大体一致，可以先用 Flex 试种子，挑中了再跑原版，但不保证一致。",
+      "In 3 of the 4 pairs both runs share roughly the same framing and blocking, so Flex can scout seeds before a full base run, though that isn't guaranteed."
+    ],
+    [
+      "用的是 Comfy-Org 重打包的 bf16 LoRA 加官方剪枝 int8 底模；Pika 说 ComfyUI 端到端出片没验证过，结果可能和官方推理包不一样。",
+      "This uses Comfy-Org's bf16 repack of the LoRA with the official pruned int8 base. Pika says end-to-end ComfyUI output hasn't been validated and may differ from their own inference package."
+    ]
+  ],
+  "demo": "index.html",
+  "cover": "cover.jpg"
+}

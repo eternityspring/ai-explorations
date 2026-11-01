@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pika H3 Flex 实测</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f6f5f1;
+  --surface: #fcfcfb;
+  --surface-2: #efeee8;
+  --line: #dcdad2;
+  --text: #0b0b0b;
+  --text-2: #52514e;
+  --text-3: #7a7973;
+  --accent: #2a78d6;
+  --good: #1f8a4c;
+  --warn: #b26b00;
+  --bad: #c43b3b;
+  --good-bg: #e3f3e8;
+  --warn-bg: #fbefd9;
+  --bad-bg: #f9e1e1;
+  --code-bg: #f0efe9;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211; --surface: #1a1a19; --surface-2: #232321; --line: #34332f;
+    --text: #ffffff; --text-2: #c3c2b7; --text-3: #8e8d85; --accent: #3987e5;
+    --good: #4cc27c; --warn: #e0a43a; --bad: #ec6d6d;
+    --good-bg: #17301f; --warn-bg: #352a12; --bad-bg: #3a1c1c; --code-bg: #232321;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211; --surface: #1a1a19; --surface-2: #232321; --line: #34332f;
+  --text: #ffffff; --text-2: #c3c2b7; --text-3: #8e8d85; --accent: #3987e5;
+  --good: #4cc27c; --warn: #e0a43a; --bad: #ec6d6d;
+  --good-bg: #17301f; --warn-bg: #352a12; --bad-bg: #3a1c1c; --code-bg: #232321;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.7 -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
+main { max-width: 1120px; margin: 0 auto; padding: 32px 16px 80px; }
+h1 { font-size: 34px; line-height: 1.25; margin: 0 0 8px; letter-spacing: -0.01em; }
+h2 { font-size: 24px; margin: 56px 0 14px; padding-top: 8px; border-top: 1px solid var(--line); }
+h3 { font-size: 18px; margin: 30px 0 8px; }
+p { margin: 10px 0; }
+a { color: var(--accent); }
+.sub { color: var(--text-2); margin: 0 0 22px; }
+.tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 22px 0; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.tile b { display: block; font-size: 26px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.tile span { color: var(--text-2); font-size: 14px; }
+.verdict { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; }
+.verdict ul { margin: 6px 0; padding-left: 20px; }
+.verdict li { margin: 8px 0; }
+.chip { display: inline-block; font-size: 13px; line-height: 1; padding: 5px 8px; border-radius: 999px; font-weight: 600; white-space: nowrap; vertical-align: 1px; }
+.chip-good { background: var(--good-bg); color: var(--good); }
+.chip-warn { background: var(--warn-bg); color: var(--warn); }
+.chip-bad { background: var(--bad-bg); color: var(--bad); }
+.table-wrap { overflow-x: auto; margin: 12px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--text-2); font-weight: 600; background: var(--surface-2); white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.note { color: var(--text-2); font-size: 14px; }
+figure { margin: 16px 0; }
+figure img, figure video { width: 100%; height: auto; display: block; border-radius: 8px; background: #000; }
+figcaption { color: var(--text-2); font-size: 14px; margin-top: 6px; }
+.pairlab { display: grid; grid-template-columns: 1fr 1fr; font-size: 12.5px; color: var(--text-3); margin: 0 0 4px; }
+.vids { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+figure.narrow { max-width: 720px; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+ul.plain li { margin: 7px 0; }
+@media (max-width: 760px) {
+  h1 { font-size: 27px; }
+  .tiles { grid-template-columns: 1fr 1fr; }
+  .vids { grid-template-columns: 1fr; }
+}
+td[rowspan] { white-space: nowrap; font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+<h1>Pika H3 Flex 实测</h1>
+<p class="sub">RTX 4080 16GB · ComfyUI 0.39 · 官方 MiniMax H3 fl2va 剪枝 int8 底模 · 2026-10-31～11-01 · 4 组同提示词、同种子对比：官方示例 5 秒，加 3 个自写的 8 秒剧本</p>
+
+<p><a href="https://github.com/Pika-Labs/Pika-H3-Flex">Pika-H3-Flex</a> 是 Pika 在 MiniMax H3 上后训练的 LoRA，6 步出带同步声音的视频（原版官方模板是 20 步）。官方推理包要全精度底模，只在 H100 80GB 上测过；这里用的是 Comfy-Org 重新打包的 bf16 LoRA，加官方剪枝 int8 底模，在一张 RTX 4080 上的 ComfyUI 里跑。Pika 说 ComfyUI 端到端出片没有验证过，结果可能和官方推理包不一样。</p>
+
+<div class="tiles">
+  <div class="tile"><b>3.1×</b><span>8 秒一条：原版 1009 秒 → Flex 328 秒</span></div>
+  <div class="tile"><b>0 错字</b><span>台词转写和原版一样准（只差一个同音字）</span></div>
+  <div class="tile"><b>1.6–2.3×</b><span>清晰度指标，4 组 Flex 都更高</span></div>
+  <div class="tile"><b>黏土跑偏</b><span>手作风格被 Flex 做成了精致 3D</span></div>
+</div>
+
+<div class="verdict">
+<p><span class="chip chip-good">结论</span> 写实、对白类的短剧可以直接用 Flex：8 秒一条 5.5 分钟，原版要 17 分钟。台词、切点、人物、笑点动作都和原版一样准，画面更清楚。黏土、定格、手绘这类手作风格，Flex 会往精致的 3D 渲染上偏，要这种味道先用原版。</p>
+<ul>
+  <li><b>速度：</b>三条 8 秒都是 327～330 秒，原版 1008～1011 秒，非常稳定。两边每步耗时一样（约 49 秒），快全靠步数少（6 对 20）。</li>
+  <li><b>台词：</b>两组对白、共 6 句，两边转写都一字不差，只有“呈上”被识别成同音的“承上”，这是转写的问题，不是念错了。“五零九零”念对了。AI 合成声那句，两边都让画面里的人闭着嘴，声音确实是“从电脑里出来的”。</li>
+  <li><b>切点：</b>提示词写 4.5 秒、4.0 秒切，两边实际都在 ±0.25 秒以内。</li>
+  <li><b>剧情：</b>两组笑点两边都演到了：领导被 AI 叫“领导好”愣住，县太爷把显卡塞进袖子坐正。细处各有输赢：Flex 让小王指了电脑、让显卡冷却变回灰色；原版让衙役真把显卡抬进了公堂（Flex 让衙役拎的是刀）。</li>
+  <li><b>风格：</b>黏土那组差别最大。原版是哑光的手捏黏土，杯子都是歪歪扭扭的；Flex 做成了光滑的 3D 微缩模型，显卡像真显卡。清晰度指标高在这里不是好事。</li>
+  <li><b>同一个种子：</b>4 组里有 3 组两边的构图、走位大体一致（前两组第二镜几乎一样），可以先用 Flex 试种子，挑中了再用原版出，但不保证一致。</li>
+  <li><b>声音：</b>Flex 4 组都更响一点（高 0.4～3.9 LUFS）。音效、配乐对不对得上动作没有逐条打分，可以自己听：对比视频第一遍放原版的声音，第二遍放 Flex 的。</li>
+  <li><b>局限：</b>每组只跑了一个种子；首尾帧、15 秒还没测。</li>
+</ul>
+</div>
+
+<h2>打分表</h2>
+<p class="note">按提示词里写的节拍逐条看画面（每 0.5 秒一帧），台词、切点用转写和场景检测量。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>组</th><th>节拍</th><th>原版 20 步</th><th>Flex 6 步</th></tr></thead>
+<tbody>
+<tr><td rowspan="7">① 实习生</td><td>两人长相、衣着照描述</td><td><span class="chip chip-good">做到</span></td><td><span class="chip chip-good">做到</span></td></tr>
+<tr><td>领导走过来俯身问话</td><td><span class="chip chip-good">做到</span></td><td><span class="chip chip-good">做到</span></td></tr>
+<tr><td>小王转身指着电脑</td><td><span class="chip chip-warn">只回了头</span></td><td><span class="chip chip-good">做到</span></td></tr>
+<tr><td>4.5 秒切领导特写</td><td><span class="chip chip-good">4.75 秒</span></td><td><span class="chip chip-good">4.71 秒</span></td></tr>
+<tr><td>AI 声音响起时两人闭嘴</td><td><span class="chip chip-good">做到</span></td><td><span class="chip chip-good">做到</span></td></tr>
+<tr><td>愣住、慢慢放下保温杯</td><td><span class="chip chip-good">做到</span></td><td><span class="chip chip-good">做到</span></td></tr>
+<tr><td>脸被屏幕照蓝</td><td><span class="chip chip-bad">没有</span></td><td><span class="chip chip-bad">没有</span></td></tr>
+<tr><td rowspan="7">② 县太爷</td><td>匾额“明镜高悬”写对</td><td><span class="chip chip-good">做到</span></td><td><span class="chip chip-good">做到</span></td></tr>
+<tr><td>拍惊堂木</td><td><span class="chip chip-good">做到</span></td><td><span class="chip chip-good">做到</span></td></tr>
+<tr><td>衙役抬着发光显卡进来</td><td><span class="chip chip-good">做到</span></td><td><span class="chip chip-bad">拎的是刀</span></td></tr>
+<tr><td>4 秒切近景</td><td><span class="chip chip-good">3.92 秒</span></td><td><span class="chip chip-good">4.04 秒</span></td></tr>
+<tr><td>师爷捂嘴耳语</td><td><span class="chip chip-good">做到</span></td><td><span class="chip chip-good">做到</span></td></tr>
+<tr><td>抓显卡塞进袖子、坐正</td><td><span class="chip chip-good">做到</span></td><td><span class="chip chip-good">做到</span></td></tr>
+<tr><td>乌纱帽动起来不重影</td><td><span class="chip chip-bad">有重影</span></td><td><span class="chip chip-bad">有重影</span></td></tr>
+<tr><td rowspan="7">③ 显卡起飞</td><td>黏土手作质感</td><td><span class="chip chip-good">做到</span></td><td><span class="chip chip-warn">像 3D 模型</span></td></tr>
+<tr><td>越转越快、烧红冒烟</td><td><span class="chip chip-good">做到</span></td><td><span class="chip chip-good">做到</span></td></tr>
+<tr><td>杯子被震得晃</td><td><span class="chip chip-good">歪了</span></td><td><span class="chip chip-warn">挪了一点</span></td></tr>
+<tr><td>起飞、便利贴乱飞</td><td><span class="chip chip-good">做到</span></td><td><span class="chip chip-good">做到</span></td></tr>
+<tr><td>撞到台灯、台灯晃</td><td><span class="chip chip-bad">看不出</span></td><td><span class="chip chip-bad">看不出</span></td></tr>
+<tr><td>黏土猫爪拍回桌上</td><td><span class="chip chip-warn">毛绒爪</span></td><td><span class="chip chip-warn">毛绒爪</span></td></tr>
+<tr><td>风扇停、变回原色冒烟</td><td><span class="chip chip-warn">冒烟但一直红</span></td><td><span class="chip chip-good">做到</span></td></tr>
+</tbody></table></div>
+<p class="note">另外：6 条都没有把台词烧成字幕（提示词末尾都写了“画面上没有字幕”）。</p>
+
+<h2>① 实习生：写实，三个声音</h2>
+<p>深夜办公室。领导端着保温杯过来：“小王，又摸鱼呢？”小王指着电脑：“没有，我在带实习生。”4.5 秒切到领导特写，笔记本里传出 AI 合成女声：“领导好，我是实习生。”领导愣住。</p>
+<p class="note">测：写实人物、三个人的台词、画外的 AI 声（画面里的人不该张嘴）、按时间切镜。提示词 <a href="prompts/office_intern.txt"><code>prompts/office_intern.txt</code></a>。</p>
+<figure>
+  <video controls preload="none" poster="media/compare_office_intern_8s_s20261031.jpg" src="media/compare_office_intern_8s_s20261031.mp4"></video>
+  <figcaption>上原版 20 步（生成 1011 秒），下 Flex 6 步（330 秒），播两遍：第一遍原版的声音，第二遍 Flex 的声音。</figcaption>
+</figure>
+<div class="vids">
+  <figure><img src="media/beats_office_intern_8s_s20261031_base.jpg" alt="原版每 0.5 秒一帧" loading="lazy"><figcaption>原版，0.25 秒起每 0.5 秒一帧</figcaption></figure>
+  <figure><img src="media/beats_office_intern_8s_s20261031_flex.jpg" alt="Flex 每 0.5 秒一帧" loading="lazy"><figcaption>Flex，同上</figcaption></figure>
+</div>
+<p>两条结构几乎一样，第二镜（领导喝水、放下杯子）差不多是同一个画面。原版第一镜景别更大，小王只回了头；Flex 人更近，小王指了电脑，表演更足。台词转写两边都一字不差。</p>
+
+<h2>② 县太爷：古装，道具和反转</h2>
+<p>明代公堂，“明镜高悬”匾。县太爷拍惊堂木：“大胆！呈上证物！”衙役抬进一块 RGB 灯效的显卡。4 秒切近景：“此乃何物？”师爷捂嘴：“回大人，五零九零。”县太爷左右一看，把显卡塞进袖子，坐正装没事。</p>
+<p class="note">测：古装和布景、匾额大字、道具、惊堂木音效、数字念法、按时间切镜、结尾的动作反转。提示词 <a href="prompts/magistrate_gpu.txt"><code>prompts/magistrate_gpu.txt</code></a>。</p>
+<figure>
+  <video controls preload="none" poster="media/compare_magistrate_gpu_8s_s20261031.jpg" src="media/compare_magistrate_gpu_8s_s20261031.mp4"></video>
+  <figcaption>上原版 20 步（生成 1011 秒），下 Flex 6 步（329 秒），播两遍：第一遍原版的声音，第二遍 Flex 的声音。</figcaption>
+</figure>
+<div class="vids">
+  <figure><img src="media/beats_magistrate_gpu_8s_s20261031_base.jpg" alt="原版每 0.5 秒一帧" loading="lazy"><figcaption>原版，0.25 秒起每 0.5 秒一帧</figcaption></figure>
+  <figure><img src="media/beats_magistrate_gpu_8s_s20261031_flex.jpg" alt="Flex 每 0.5 秒一帧" loading="lazy"><figcaption>Flex，同上</figcaption></figure>
+</div>
+<p>匾额两边都按古式从右往左写对了。原版第一镜衙役真把发光的显卡抬到了桌前；Flex 的衙役拎着刀进来，显卡到第二镜才直接出现在桌上。第二镜两边几乎一样，抓显卡、塞袖子、坐正都演到了。乌纱帽上的绿色帽饰和帽子重影两边都有，是底模的毛病，不是 Flex 带来的。</p>
+
+<h2>③ 显卡起飞：黏土定格，无台词</h2>
+<p>书桌上一块长着眼睛的黏土显卡，风扇越转越快，烧红冒烟，像无人机一样飞起来，便利贴满天飞，撞到台灯；一只猫爪从右边伸进来，一巴掌把它拍回桌上，冒出一缕烟。</p>
+<p class="note">测：手作风格、物理（起飞、纸片、杯子晃）、音效和配乐跟着动作走、一镜到底。提示词 <a href="prompts/clay_gpu.txt"><code>prompts/clay_gpu.txt</code></a>。</p>
+<figure>
+  <video controls preload="none" poster="media/compare_clay_gpu_8s_s20261031.jpg" src="media/compare_clay_gpu_8s_s20261031.mp4"></video>
+  <figcaption>上原版 20 步（生成 1008 秒），下 Flex 6 步（327 秒），播两遍：第一遍原版的声音，第二遍 Flex 的声音。</figcaption>
+</figure>
+<div class="vids">
+  <figure><img src="media/beats_clay_gpu_8s_s20261031_base.jpg" alt="原版每 0.5 秒一帧" loading="lazy"><figcaption>原版，0.25 秒起每 0.5 秒一帧</figcaption></figure>
+  <figure><img src="media/beats_clay_gpu_8s_s20261031_flex.jpg" alt="Flex 每 0.5 秒一帧" loading="lazy"><figcaption>Flex，同上</figcaption></figure>
+</div>
+<p>这组差别最大。原版是哑光的手捏黏土，杯子、显卡边缘都圆乎乎的，最像定格动画；Flex 的显卡、杯子、台灯都像精致的 3D 模型，只剩眼睛还像黏土。节拍两边都基本演全了，Flex 起飞更明显，结尾还让显卡冷却回了灰色；原版的杯子被震歪了，显卡最后一直是红的。两边的猫爪都是毛绒的，不是黏土。都是一镜到底，没有乱切。</p>
+
+<h2>⓪ 官方示例：卡通包子（5 秒）</h2>
+<p><a href="prompts/example_t2v.txt">Comfy-Org 模板自带的提示词</a>：厨师包包子，包子自己长腿跑进锅里。</p>
+<figure>
+  <video controls preload="none" poster="media/compare_example_t2v_5s_s20261031.jpg" src="media/compare_example_t2v_5s_s20261031.mp4"></video>
+  <figcaption>上原版 20 步（生成 475 秒），下 Flex 6 步（162 秒），播两遍：第一遍原版的声音，第二遍 Flex 的声音。</figcaption>
+</figure>
+<figure>
+  <img src="media/beats_example_t2v_5s_s20261031.jpg" alt="1.5–5 秒每 0.5 秒一帧：上排原版、下排 Flex" loading="lazy">
+  <figcaption>1.5–5 秒每 0.5 秒一帧，上排原版、下排 Flex。</figcaption>
+</figure>
+<p>两条都把包子送进了锅里。Flex 演全了转身、扑空、最后直起身；原版到最后一秒还弯着腰。这组两边构图不一样。皮克斯式卡通 Flex 没有跑偏，只是背景细节更多。</p>
+
+<h2>数据</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>组</th><th></th><th class="num">生成</th><th class="num">清晰度</th><th class="num">运动量</th><th class="num">响度</th><th class="num">台词字错率</th><th class="num">切点</th></tr></thead>
+<tbody>
+<tr><td rowspan="2">⓪ 示例 5 秒</td><td>原版</td><td class="num">474.7 秒</td><td class="num">95.6</td><td class="num">6.06</td><td class="num">-10.5</td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td>Flex</td><td class="num">162.4 秒</td><td class="num">157.0</td><td class="num">5.44</td><td class="num">-10.1</td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td rowspan="2">① 实习生</td><td>原版</td><td class="num">1010.6 秒</td><td class="num">39.4</td><td class="num">2.72</td><td class="num">-11.0</td><td class="num">0%</td><td class="num">4.75 秒</td></tr>
+<tr><td>Flex</td><td class="num">329.7 秒</td><td class="num">89.8</td><td class="num">3.36</td><td class="num">-9.8</td><td class="num">0%</td><td class="num">4.71 秒</td></tr>
+<tr><td rowspan="2">② 县太爷</td><td>原版</td><td class="num">1011.2 秒</td><td class="num">221.3</td><td class="num">4.48</td><td class="num">-14.2</td><td class="num">5.9%*</td><td class="num">3.92 秒</td></tr>
+<tr><td>Flex</td><td class="num">328.5 秒</td><td class="num">389.9</td><td class="num">4.80</td><td class="num">-10.3</td><td class="num">5.9%*</td><td class="num">4.04 秒</td></tr>
+<tr><td rowspan="2">③ 显卡起飞</td><td>原版</td><td class="num">1007.8 秒</td><td class="num">82.4</td><td class="num">5.95</td><td class="num">-12.9</td><td class="num">无台词</td><td class="num">无</td></tr>
+<tr><td>Flex</td><td class="num">326.7 秒</td><td class="num">178.3</td><td class="num">4.57</td><td class="num">-10.9</td><td class="num">无台词</td><td class="num">无</td></tr>
+</tbody></table></div>
+<p class="note">生成时间是 ComfyUI 记的开始到结束，含加载、初始化和解码。清晰度是每秒一帧灰度图拉普拉斯方差的平均；运动量是相邻帧（缩到 1/4）灰度差的平均；响度单位 LUFS。台词用 mlx-whisper large-v3-turbo 转写（不给原文提示），去标点后逐字比；* 两边错的都是同一个字：“呈上”转成了同音的“承上”。切点用 ffmpeg 场景检测。③ 没有台词，转写出来的“字幕志愿者 李宗盛”是 Whisper 在没人说话时的常见幻觉。</p>
+
+<h2>怎么跑的</h2>
+<ul class="plain">
+  <li><b>共同部分：</b>底模 <code>minimax_h3_fl2va_pruned_int8_convrot</code>、文本编码器 <code>qwen3vl_32b_minimax_h3_nvfp4_awq</code>、视频 VAE int8、音频 VAE fp32、BasicGuider（CFG 1），1280×736，种子都是 20261031。8 秒是 192 帧，5 秒是 124 帧。</li>
+  <li><b>Flex：</b>加 <code>pika_h3_flex_fl2va_v1_bf16</code>（Comfy-Org 重打包，1.96 GB），采样器 lcm，ManualSigmas <code>1.0, 0.972973, 0.923077, 0.8, 0.571429, 0.333333, 0.0</code>，都照模板。</li>
+  <li><b>原版：</b>照官方模板，res_multistep / simple 20 步，不挂 LoRA。</li>
+  <li><b>剧本：</b>三个 8 秒剧本都是纯文本生视频（英文描述，台词写成 <code>&lt;d&gt;[Chinese] …&lt;/d&gt;</code>），台词控制在每秒 3 字左右，数字写成念法。</li>
+  <li><b>显存：</b>RTX 4080 16GB，ComfyUI 用 <code>--reserve-vram 3 --disable-smart-memory --cache-none</code> 启动，8 秒的 6 条一次都没崩。</li>
+</ul>
+
+<h2>还没测的</h2>
+<ul class="plain">
+  <li>首尾帧（FL2VA）：比如拿人物定妆照做首帧，看 Flex 能不能保住脸。</li>
+  <li>15 秒：按每步耗时推算，Flex 一条约 17 分钟（原版 55 分钟），还没实测。</li>
+  <li>多个种子：每组只跑了一个种子；“拿 Flex 挑种子”能不能成立，要多跑几个种子看构图是否一致。</li>
+  <li>声音内容：音效、配乐是否跟着动作走，要人听。</li>
+  <li>参考图（Ref2VA）：要另一个约 20 GB 的底模，没装。</li>
+</ul>
+</main>
+<script src="../assets/nav.js" async data-pos="top-right"></script>
+</body>
+</html>

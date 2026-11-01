@@ -20,7 +20,7 @@
 <meta property="og:title" content="AI Explorations · AI 探索笔记">
 <meta property="og:description" content="Hands-on tests and interactive demos of AI models. 一些 AI 模型的实测和可以直接上手玩的 demo。">
 <meta property="og:url" content="https://eternityspring.github.io/ai-explorations/">
-<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/drama3-vs-indextts/cover.jpg">
+<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/pika-h3-flex/cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <style>
 :root { --bg:#f6f3ee; --card:#fffdf9; --ink:#1d1b18; --muted:#78716a; --line:#e4ddd2; --chip:#efe9df; --accent:#d6402a; --accent-ink:#fff; }
@@ -94,17 +94,35 @@ footer a { color:inherit; }
   </header>
   <nav class="filters" aria-label="Filter">
     <button type="button" aria-pressed="true" data-tag=""><span class="zh ">全部</span><span class="en " lang="en">All</span></button>
+    <button type="button" aria-pressed="false" data-tag="视频生成"><span class="zh ">视频生成</span><span class="en " lang="en">Video generation</span></button>
+    <button type="button" aria-pressed="false" data-tag="加速 LoRA"><span class="zh ">加速 LoRA</span><span class="en " lang="en">Speed-up LoRA</span></button>
+    <button type="button" aria-pressed="false" data-tag="有声视频"><span class="zh ">有声视频</span><span class="en " lang="en">Video with audio</span></button>
+    <button type="button" aria-pressed="false" data-tag="对比"><span class="zh ">对比</span><span class="en " lang="en">Comparison</span></button>
     <button type="button" aria-pressed="false" data-tag="语音合成"><span class="zh ">语音合成</span><span class="en " lang="en">Speech synthesis</span></button>
     <button type="button" aria-pressed="false" data-tag="TTS 对比"><span class="zh ">TTS 对比</span><span class="en " lang="en">TTS comparison</span></button>
     <button type="button" aria-pressed="false" data-tag="盲听"><span class="zh ">盲听</span><span class="en " lang="en">Blind test</span></button>
     <button type="button" aria-pressed="false" data-tag="交互"><span class="zh ">交互</span><span class="en " lang="en">Interactive</span></button>
-    <button type="button" aria-pressed="false" data-tag="视频生成"><span class="zh ">视频生成</span><span class="en " lang="en">Video generation</span></button>
     <button type="button" aria-pressed="false" data-tag="环绕视频"><span class="zh ">环绕视频</span><span class="en " lang="en">Orbit video</span></button>
     <button type="button" aria-pressed="false" data-tag="抠像"><span class="zh ">抠像</span><span class="en " lang="en">Matting</span></button>
     <button type="button" aria-pressed="false" data-tag="图像生成"><span class="zh ">图像生成</span><span class="en " lang="en">Image generation</span></button>
     <button type="button" aria-pressed="false" data-tag="人物一致性"><span class="zh ">人物一致性</span><span class="en " lang="en">Character consistency</span></button>
   </nav>
   <section class="grid">
+  <article class="card" data-tags="视频生成|加速 LoRA|有声视频|对比">
+    <a class="cover" href="pika-h3-flex/index.html" data-demo aria-label="Pika H3 Flex — 3× faster in 6 steps, but clay turns into polished 3D">
+      <img src="pika-h3-flex/cover.jpg" alt="" loading="lazy">
+      
+      <span class="play"><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span></span>
+    </a>
+    <div class="body">
+      <p class="meta"><time datetime="2026-11-01">2026-11-01</time><span class="tag"><span class="zh ">视频生成</span><span class="en " lang="en">Video generation</span></span><span class="tag"><span class="zh ">加速 LoRA</span><span class="en " lang="en">Speed-up LoRA</span></span><span class="tag"><span class="zh ">有声视频</span><span class="en " lang="en">Video with audio</span></span><span class="tag"><span class="zh ">对比</span><span class="en " lang="en">Comparison</span></span></p>
+      <h2><span class="zh ">Pika H3 Flex 实测：6 步快 3 倍，黏土风格会跑偏</span><span class="en " lang="en">Pika H3 Flex — 3× faster in 6 steps, but clay turns into polished 3D</span></h2>
+      <p class="zh sum">Pika 在 MiniMax H3 上后训练的 LoRA，6 步出带声音的视频。在一张 RTX 4080 上的 ComfyUI 里，同提示词、同种子和原版 20 步比了 4 组：官方示例的卡通包子，加三个自写的 8 秒剧本（写实办公室对白、古装公堂、黏土定格）。8 秒一条 328 秒对 1009 秒，台词一字不差，画面更清楚；只有黏土那组被做成了精致 3D。</p><p class="en sum" lang="en">Pika's post-trained LoRA for MiniMax H3 makes video with sound in 6 steps. On one RTX 4080 in ComfyUI, with the same prompts and seeds as the stock 20-step run, four pairs: the official cartoon-dumpling example plus three original 8-second scripts (a realistic office dialogue, a period courtroom, and clay stop-motion). An 8-second clip took 328 s instead of 1009 s, every spoken line came out right and the picture was sharper; only the clay one turned into polished 3D. The page is in Chinese.</p>
+      <p class="models"><code>Pika H3 Flex FL2VA LoRA (Comfy-Org bf16)</code><code>MiniMax-H3 FL2VA (pruned int8)</code><code>ComfyUI 0.39</code><code>mlx-whisper large-v3-turbo</code></p>
+      <details><summary><span class="zh ">要点</span><span class="en " lang="en">Notes</span></summary><ul><li><span class="zh ">两边每步耗时一样（8 秒约 49 秒一步），快全靠步数少：三条 8 秒 Flex 327～330 秒，原版 1008～1011 秒。</span><span class="en " lang="en">Each step takes the same time on both (about 49 s at 8 seconds); the speed-up comes entirely from fewer steps: 327–330 s for Flex vs 1008–1011 s for the base on the three 8-second clips.</span></li><li><span class="zh ">两组对白共 6 句，Whisper 转写两边都一字不差（只有一个同音字是转写的问题），切点都在提示词写的时间 ±0.25 秒内。</span><span class="en " lang="en">Across 6 dialogue lines in two scripts, Whisper transcripts matched the script on both sides (one homophone was a transcription slip), and the cuts landed within ±0.25 s of the prompted time.</span></li><li><span class="zh ">黏土定格那组原版是哑光的手捏黏土，Flex 做成了光滑的 3D 微缩模型，手作感没了；清晰度指标高在这里不是好事。</span><span class="en " lang="en">In the clay stop-motion pair the base looks like matte hand-pressed clay, while Flex renders smooth 3D miniatures and the handmade feel is gone. A higher sharpness score isn't a win here.</span></li><li><span class="zh ">4 组里有 3 组两边构图、走位大体一致，可以先用 Flex 试种子，挑中了再跑原版，但不保证一致。</span><span class="en " lang="en">In 3 of the 4 pairs both runs share roughly the same framing and blocking, so Flex can scout seeds before a full base run, though that isn't guaranteed.</span></li><li><span class="zh ">用的是 Comfy-Org 重打包的 bf16 LoRA 加官方剪枝 int8 底模；Pika 说 ComfyUI 端到端出片没验证过，结果可能和官方推理包不一样。</span><span class="en " lang="en">This uses Comfy-Org's bf16 repack of the LoRA with the official pruned int8 base. Pika says end-to-end ComfyUI output hasn't been validated and may differ from their own inference package.</span></li></ul></details>
+      <p class="links"><a class="btn primary" href="pika-h3-flex/index.html" data-demo><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span> ↗</a></p>
+    </div>
+  </article>
   <article class="card" data-tags="语音合成|TTS 对比|盲听|交互">
     <a class="cover" href="drama3-vs-indextts/index.html" data-demo aria-label="Drama 3 vs IndexTTS 2.5 — speaks 10× sooner, with better emotion">
       <img src="drama3-vs-indextts/cover.jpg" alt="" loading="lazy">
@@ -166,7 +184,7 @@ footer a { color:inherit; }
     </div>
   </article>
   </section>
-  <footer><span class="zh ">共 4 个 demo</span><span class="en " lang="en">4 demos</span> · <a href="https://github.com/eternityspring/ai-explorations">GitHub</a></footer>
+  <footer><span class="zh ">共 5 个 demo</span><span class="en " lang="en">5 demos</span> · <a href="https://github.com/eternityspring/ai-explorations">GitHub</a></footer>
 </main>
 <script>
 // 语言切换：记住选择、地址栏改成 ?lang=…；点进 demo 的链接带上当前语言

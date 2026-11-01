@@ -11,6 +11,7 @@ Hands-on tests of AI models, with interactive demos you can play with right in t
 <!-- evals:start -->
 | Demo | Models |
 |---|---|
+| [Pika H3 Flex — 3× faster in 6 steps, but clay turns into polished 3D](https://eternityspring.github.io/ai-explorations/pika-h3-flex/) | Pika H3 Flex FL2VA LoRA (Comfy-Org bf16), MiniMax-H3 FL2VA (pruned int8), ComfyUI 0.39, mlx-whisper large-v3-turbo |
 | [Drama 3 vs IndexTTS 2.5 — speaks 10× sooner, with better emotion](https://eternityspring.github.io/ai-explorations/drama3-vs-indextts/) | Drama 3 int4 (fishaudio/drama-3-int4), IndexTTS 2.5, SGLang-Omni 0.1.8, Whisper turbo, emotion2vec_plus_large |
 | [Rooftop Dance — spin the scene while she keeps dancing](https://eternityspring.github.io/ai-explorations/rooftop-dance-360/) | Qwen Image 2.1, MiniMax-H3 FL2V (8-step turbo), MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), SAM 3.1 |
 | [The Feed — a comic page you can spin](https://eternityspring.github.io/ai-explorations/the-feed-comic/) | Qwen Image 2.1, MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), three.js |
