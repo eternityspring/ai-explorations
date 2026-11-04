@@ -11,6 +11,7 @@
 <!-- evals:start -->
 | Demo | 模型 |
 |---|---|
+| [P-H3-Image 实测：做俯视图不如 Qwen Image 2.1](https://eternityspring.github.io/ai-explorations/p-h3-image-multiview/) | P-H3-Image (int8, ComfyUI), P-H3-Image LoRA on MiniMax-H3 FL2VA (pruned int8), Qwen Image 2.1 (int8), Qwen3.8-27B (judge), ComfyUI 0.44 |
 | [Pika H3 Flex 实测：6 步快 3 倍，黏土风格会跑偏](https://eternityspring.github.io/ai-explorations/pika-h3-flex/) | Pika H3 Flex FL2VA LoRA (Comfy-Org bf16), MiniMax-H3 FL2VA (pruned int8), ComfyUI 0.39, mlx-whisper large-v3-turbo |
 | [Drama 3 对 IndexTTS 2.5：开口快十倍，情绪更到位](https://eternityspring.github.io/ai-explorations/drama3-vs-indextts/) | Drama 3 int4 (fishaudio/drama-3-int4), IndexTTS 2.5, SGLang-Omni 0.1.8, Whisper turbo, emotion2vec_plus_large |
 | [天台起舞：她一直在跳，拖着转整个天台](https://eternityspring.github.io/ai-explorations/rooftop-dance-360/) | Qwen Image 2.1, MiniMax-H3 FL2V (8-step turbo), MiniMax-H3 Ref2VA, ORB360 LoRA (step 1500), SAM 3.1 |

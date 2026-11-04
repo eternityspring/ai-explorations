@@ -20,7 +20,7 @@
 <meta property="og:title" content="AI Explorations · AI 探索笔记">
 <meta property="og:description" content="Hands-on tests and interactive demos of AI models. 一些 AI 模型的实测和可以直接上手玩的 demo。">
 <meta property="og:url" content="https://eternityspring.github.io/ai-explorations/">
-<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/pika-h3-flex/cover.jpg">
+<meta property="og:image" content="https://eternityspring.github.io/ai-explorations/p-h3-image-multiview/cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <style>
 :root { --bg:#f6f3ee; --card:#fffdf9; --ink:#1d1b18; --muted:#78716a; --line:#e4ddd2; --chip:#efe9df; --accent:#d6402a; --accent-ink:#fff; }
@@ -94,10 +94,13 @@ footer a { color:inherit; }
   </header>
   <nav class="filters" aria-label="Filter">
     <button type="button" aria-pressed="true" data-tag=""><span class="zh ">全部</span><span class="en " lang="en">All</span></button>
+    <button type="button" aria-pressed="false" data-tag="图像编辑"><span class="zh ">图像编辑</span><span class="en " lang="en">Image editing</span></button>
+    <button type="button" aria-pressed="false" data-tag="多视角"><span class="zh ">多视角</span><span class="en " lang="en">Multi-view</span></button>
+    <button type="button" aria-pressed="false" data-tag="俯视图"><span class="zh ">俯视图</span><span class="en " lang="en">Top-down view</span></button>
+    <button type="button" aria-pressed="false" data-tag="对比"><span class="zh ">对比</span><span class="en " lang="en">Comparison</span></button>
     <button type="button" aria-pressed="false" data-tag="视频生成"><span class="zh ">视频生成</span><span class="en " lang="en">Video generation</span></button>
     <button type="button" aria-pressed="false" data-tag="加速 LoRA"><span class="zh ">加速 LoRA</span><span class="en " lang="en">Speed-up LoRA</span></button>
     <button type="button" aria-pressed="false" data-tag="有声视频"><span class="zh ">有声视频</span><span class="en " lang="en">Video with audio</span></button>
-    <button type="button" aria-pressed="false" data-tag="对比"><span class="zh ">对比</span><span class="en " lang="en">Comparison</span></button>
     <button type="button" aria-pressed="false" data-tag="语音合成"><span class="zh ">语音合成</span><span class="en " lang="en">Speech synthesis</span></button>
     <button type="button" aria-pressed="false" data-tag="TTS 对比"><span class="zh ">TTS 对比</span><span class="en " lang="en">TTS comparison</span></button>
     <button type="button" aria-pressed="false" data-tag="盲听"><span class="zh ">盲听</span><span class="en " lang="en">Blind test</span></button>
@@ -108,6 +111,21 @@ footer a { color:inherit; }
     <button type="button" aria-pressed="false" data-tag="人物一致性"><span class="zh ">人物一致性</span><span class="en " lang="en">Character consistency</span></button>
   </nav>
   <section class="grid">
+  <article class="card" data-tags="图像编辑|多视角|俯视图|对比">
+    <a class="cover" href="p-h3-image-multiview/index.html" data-demo aria-label="P-H3-Image — loses to Qwen Image 2.1 on top-down views, and neither can turn to the side">
+      <img src="p-h3-image-multiview/cover.jpg" alt="" loading="lazy">
+      
+      <span class="play"><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span></span>
+    </a>
+    <div class="body">
+      <p class="meta"><time datetime="2026-11-04">2026-11-04</time><span class="tag"><span class="zh ">图像编辑</span><span class="en " lang="en">Image editing</span></span><span class="tag"><span class="zh ">多视角</span><span class="en " lang="en">Multi-view</span></span><span class="tag"><span class="zh ">俯视图</span><span class="en " lang="en">Top-down view</span></span><span class="tag"><span class="zh ">对比</span><span class="en " lang="en">Comparison</span></span></p>
+      <h2><span class="zh ">P-H3-Image 实测：做俯视图不如 Qwen Image 2.1</span><span class="en " lang="en">P-H3-Image — loses to Qwen Image 2.1 on top-down views, and neither can turn to the side</span></h2>
+      <p class="zh sum">PrunaAI 基于 MiniMax-H3 做的图像生成和编辑模型，8 步出 8 MP。用 4 个自写场景（客厅、小镇广场、后院花园、动画卧室）测“同一个场景换视角”，重点是俯视图，和 Qwen Image 2.1 改图对比，由 Qwen3.8 看图评判。俯视图 P-H3 24 张里 10 张是正上方，Qwen Image 24 张全部至少是陡俯视，两两盲测 22:2、21:3 胜出；45° 高角度两者都行，侧面和反打两个模型都转不过去。</p><p class="en sum" lang="en">PrunaAI's image generation and editing model built on MiniMax-H3, 8 MP in 8 steps. Four original scenes (a living room, a town square, a backyard garden and an anime bedroom) test re-shooting the same scene from new camera angles, with the top-down view as the focus, against Qwen Image 2.1 edits, judged by Qwen3.8 looking at the images. For top-down views, 10 of 24 P-H3 images were straight overhead, while all 24 Qwen Image results were at least steeply overhead and won the blind pairwise tests 22:2 and 21:3. Both handle a 45° high angle; neither can turn the camera to the side or reverse it. The page is in Chinese.</p>
+      <p class="models"><code>P-H3-Image (int8, ComfyUI)</code><code>P-H3-Image LoRA on MiniMax-H3 FL2VA (pruned int8)</code><code>Qwen Image 2.1 (int8)</code><code>Qwen3.8-27B (judge)</code><code>ComfyUI 0.44</code></p>
+      <details><summary><span class="zh ">要点</span><span class="en " lang="en">Notes</span></summary><ul><li><span class="zh ">P-H3 能不能拍到正上方要看场景：客厅和广场 6 次里各有 5 次，后院花园和动画卧室都是 0/6，只抬到高角度或陡俯视。</span><span class="en " lang="en">Whether P-H3 reaches a straight-overhead view depends on the scene: 5 of 6 for the living room and the square, 0 of 6 for the garden and the anime bedroom, which only rise to a high or steep angle.</span></li><li><span class="zh ">P-H3 必须走自带的提示词扩写。按模型卡格式手写的编辑提示词（带“其余保持不变”）大多原样照抄输入图，12 张只有 1 张变成正上方。写得更明确（垂直向下、看不到墙和地平线）能把 P-H3 从 4/12 提到 6/12。</span><span class="en " lang="en">P-H3 needs its built-in prompt upsampler. Hand-written edit prompts in the model card's format (with &quot;keep everything else&quot;) mostly copied the input; only 1 of 12 turned overhead. A more explicit request (straight down, no walls or horizon) lifted P-H3 from 4/12 to 6/12.</span></li><li><span class="zh ">一旦拍成俯视，两者布局都对：原机位一侧在画面下方，物件前后左右关系 92%～97% 对得上。Qwen Image 更爱改家具样子（物件变样 13%～15%）。</span><span class="en " lang="en">Once overhead, both keep the layout: the original camera side ends up at the bottom and 92–97% of pairwise object relations match. Qwen Image changes furniture more often (13–15% of objects altered).</span></li><li><span class="zh ">侧面（转 90°）和反打（转 180°）都做不到：P-H3 基本保持原构图，Qwen Image 的反打其实只是左右镜像，连评判模型都被骗过去。</span><span class="en " lang="en">Neither can turn 90° to the side or 180° for a reverse shot: P-H3 keeps the original composition, and Qwen Image's reverse is just a left-right mirror, which fooled the judge model too.</span></li><li><span class="zh ">H100 上同卡还常驻别的模型、只剩约 30 GB 显存时，P-H3 int8 改图每张约 12 秒，和 Qwen Image 差不多。要 ComfyUI 主线（0.44）才有它的节点。</span><span class="en " lang="en">On an H100 shared with other resident models, with only about 30 GB of VRAM free, a P-H3 int8 edit took about 12 s, on par with Qwen Image. Its node needs ComfyUI master (0.44).</span></li></ul></details>
+      <p class="links"><a class="btn primary" href="p-h3-image-multiview/index.html" data-demo><span class="zh ">打开 demo</span><span class="en " lang="en">Open demo</span> ↗</a></p>
+    </div>
+  </article>
   <article class="card" data-tags="视频生成|加速 LoRA|有声视频|对比">
     <a class="cover" href="pika-h3-flex/index.html" data-demo aria-label="Pika H3 Flex — 3× faster in 6 steps, but clay turns into polished 3D">
       <img src="pika-h3-flex/cover.jpg" alt="" loading="lazy">
@@ -184,7 +202,7 @@ footer a { color:inherit; }
     </div>
   </article>
   </section>
-  <footer><span class="zh ">共 5 个 demo</span><span class="en " lang="en">5 demos</span> · <a href="https://github.com/eternityspring/ai-explorations">GitHub</a></footer>
+  <footer><span class="zh ">共 6 个 demo</span><span class="en " lang="en">6 demos</span> · <a href="https://github.com/eternityspring/ai-explorations">GitHub</a></footer>
 </main>
 <script>
 // 语言切换：记住选择、地址栏改成 ?lang=…；点进 demo 的链接带上当前语言
